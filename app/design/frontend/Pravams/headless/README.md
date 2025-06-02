@@ -1,7 +1,7 @@
 # magento2-theme
 Magento 2 custom theme that enhances magento 2 features:
 
-## 1.) Headless Theme
+## Headless Theme
 
 This Magento theme, removes the default "head"(mostly CSS) in Magento, and makes it very easy for the front-end developers to replace this head with another head(CSS design) and create a new theme for Magento very quickly, so it is named as a Headless theme.
 
@@ -26,8 +26,6 @@ This Magento theme, removes the default "head"(mostly CSS) in Magento, and makes
     * Select Offline payment method
     * Place order only as a guest user
 
-
-**Download Link:-** <https://github.com/pravams/magento2-extensions/tree/main/app/design/frontend/Pravams/headless>
 
 ## Steps to Install
 

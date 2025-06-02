@@ -1,7 +1,7 @@
 # magento2-extensions
 Magento 2 custom extensions that enhance magento 2 features:
 
-## 1.) Recurring Order
+## Recurring Order
 
 This Recurring Order extension for Magento makes it easier for customers to create repeat orders by creating subscription orders based on a frequency for offline payment methods.  With this Recurring Order extension, customers can use it to create a subscription for the product. And the order will be placed automatically every week based on the frequency that they select.
 
@@ -18,8 +18,6 @@ This Recurring Order extension for Magento makes it easier for customers to crea
     * View the subscription details created by the customer from Magento Admin.
     * Ability to make the subscription inactive, active, or delete it.
     * View the orders placed through the subscription.
-
-**Download Link:-** <https://github.com/pravams/magento2-extensions/tree/main/app/code/Pravams/RecurringOrder>
 
 ## Steps to Install
 
