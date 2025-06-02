@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!--<referenceBlock name="logo">
+            <arguments>
+                <argument name="logo_width" xsi:type="number">270</argument>
+            </arguments>
+        </referenceBlock>-->
+        
+        <referenceBlock name="header.container" remove="true"/>
+        <referenceBlock name="top.links" remove="true"/>
+        <referenceBlock name="page.main.title" remove="true"/>
+        
+        <!--<referenceBlock name="main" remove="true"/>-->
+        
+        <referenceBlock name="page.top" remove="true"/>
+        <referenceBlock name="footer-container" remove="true"/>
+        
+
+        <!--<referenceContainer name="content">
+            <block class="Magento\Framework\View\Element\Template" name="hcontent" template="Magento_Theme::home-headless.phtml"></block>
+        <referenceContainer>-->
+    </body>
+</page>

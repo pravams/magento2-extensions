@@ -1,0 +1,852 @@
+<?php 
+//@codingStandardsIgnoreStart
+?>
+<?php 
+$baseUrl = $block->getUrl();
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$storeManager = $objectManager->get('Magento\Store\Model\StoreManagerInterface');
+$currencySymbol = $storeManager->getStore()->getBaseCurrency()->getCurrencySymbol();
+?>
+
+
+<script type="text/javascript">
+requirejs(['jquery'], function(jQuery){
+    jQuery(function(){
+
+        var allproducts;
+
+        // hide all the other magento divs
+        jQuery('#pravams-headless-home').parent().find(`[data-content-type='html']`).hide();
+
+        // display the categories
+        var catURL = "<?php echo $baseUrl?>rest/default/V1/categories";
+
+        jQuery('#pravams-logo').click(function(){
+          jQuery('#pravams-home-banner').show();
+          jQuery('#pravams-cat-prod-list').hide();
+          jQuery('#pravams-product-count').hide();
+          jQuery('#pravams-cat-name').hide();
+        });
+
+        function getAllCategories(){
+            jQuery.getJSON(catURL, function(result){
+                jQuery.each(result, function(i, field){
+                    if(i == 'children_data'){
+                        jQuery.each(field, function(catid, catvalue){
+                            var catName = catvalue.name;
+                            var catId = catvalue.id;
+                            jQuery('#pravams-all-categories').append('<a href="#" class="w3-bar-item w3-button" catid="'+catId+'">'+catName+'</a>');
+                        });
+                    }
+                });
+                displayProducts();
+            });
+        }
+
+        getAllCategories();
+        
+        function displayProducts(){
+          // link the categories to display products
+          jQuery('#pravams-all-categories a').click(function(){
+
+            jQuery('#pravams-all-categories a').css('background-color', 'white');
+            jQuery(this).css('background-color', 'lightgrey')
+
+            var catid = jQuery(this).attr('catid');
+            jQuery('#pravams-home-banner').hide();
+            jQuery('#pravams-cat-prod-list').show();
+            jQuery('#pravams-cat-name').show();
+            var productListURL = "<?php echo $baseUrl?>rest/default/V1/products?searchCriteria[currentPage]=1&searchCriteria[filterGroups][0][filters][0][conditionType]=eq&searchCriteria[filterGroups][0][filters][0][field]=category_id&searchCriteria[filterGroups][0][filters][0][value]="+catid+"&searchCriteria[filterGroups][1][filters][1][conditionType]=eq&searchCriteria[filterGroups][1][filters][1][field]=visibility&searchCriteria[filterGroups][1][filters][1][value]=4&searchCriteria[filterGroups][2][filters][2][conditionType]=eq&searchCriteria[filterGroups][2][filters][2][field]=type_id&searchCriteria[filterGroups][2][filters][2][value]=simple";
+            generateProductlist(productListURL);
+            var catName = jQuery(this).html();
+            jQuery('#pravams-cat-name').html(catName);
+          });
+        }
+        
+        function generateProductlist(productListURL){
+          jQuery('#pravams-cat-prod-list').html("");          
+          allproducts = [];
+          var iCount = 0;
+          jQuery.getJSON(productListURL, function(result){
+            jQuery.each(result, function(i, field){
+              if(i == 'items'){
+                jQuery.each(field, function(j, product){
+                  iCount = iCount+1;
+                  var productImageUrl = '<?php echo $baseUrl?>/media/catalog/product'+product.media_gallery_entries[0].file;
+                  var productId = product.id;
+                  allproducts[iCount] = product;
+                  var productHtml = '<div class="w3-col l3 s6"><div class="w3-container"><div class="w3-display-container"><img src="'+productImageUrl+'" style="width:100%"><span class="w3-tag w3-display-topleft">Sale</span><div class="w3-display-middle w3-display-hover"><button class="w3-button w3-black pravams-product-view" style="margin-bottom: 12px;" product-id="'+productId+'">View</button></div></div><span class="pravams-product-view" style="cursor:pointer;" product-id="'+productId+'">'+product.name+'<br><b class="w3-text-red"><?php echo $currencySymbol;?>'+product.price+'</b></span></div></div>';
+                  jQuery('#pravams-cat-prod-list').append(productHtml);
+                  
+                });
+              }else if(i == 'total_count'){
+                var productCount = field+' item(s)';
+                jQuery('#pravams-product-count').show();
+                jQuery('#pravams-product-count').html(productCount);
+              }
+            });
+
+            // view product details
+            jQuery('.pravams-product-view').click(function(){
+              // create a big JS object with all product data so that we do not have the call the api again
+              var jIndex = jQuery(this).attr('product-id');
+              var selectedProductId = jQuery(this).attr('product-id');
+              jLength = allproducts.length;
+              for(var jCount=1; jCount<jLength; jCount++){
+                if(allproducts[jCount].id == jIndex){
+                  
+                  var product = allproducts[jCount];
+                  var productImageUrl = '<?php echo $baseUrl?>/media/catalog/product'+product.media_gallery_entries[0].file;
+                  var productId = product.id;                  
+                  var iCountDesc = 0;
+                  var productDescription = "";
+                  var productShortDescription = "";
+                  for(var kCount=0; kCount< product.custom_attributes.length; kCount++) {
+                    if(product.custom_attributes[kCount].attribute_code == 'description'){
+                      productDescription = product.custom_attributes[kCount].value;
+                    }else if(product.custom_attributes[kCount].attribute_code == 'short_description'){
+                      productShortDescription = product.custom_attributes[kCount].value;
+                    }  
+                  }
+                  var productHtml = '<div class="w3-col l3 s6"><div class="w3-container"><div class="w3-display-container"><img src="'+productImageUrl+'" style="width:100%"><span class="w3-tag w3-display-topleft">Sale</span><div class="w3-display-middle w3-display-hover"></div></div><p>'+product.name+'<br><b class="w3-text-red"><?php echo $currencySymbol;?>'+product.price+'</b></p></div></div>';
+                  var prodDescHtml = '<div class="w3-col l3 s6"><div class="w3-container"><div class="w3-display-container">'+productShortDescription+'<p>'+productDescription+'</p><div id="qty-error-message" class="w3-text-red" style="display:none;"></div><div style="padding: 6px 0px 11px;width: 25%;"><input type="text" placeholder="Qty" id="pravams-product-qty" /></div><button class="w3-button w3-red pravams-product-buy" product-id="'+productId+'">Add to Cart <i class="fa fa-shopping-cart"></i></button></div></div></div>';
+                  jQuery('#pravams-cat-prod-list').html("");
+                  jQuery('#pravams-cat-prod-list').append(productHtml+prodDescHtml);
+                  jQuery('#pravams-cat-name').html(product.name);
+                  jQuery('#pravams-product-count').hide();
+                } 
+              }
+
+              //add to cart
+              jQuery('.pravams-product-buy').click(function(){
+                var cartId = '';
+                var quoteId;
+                jQuery('#qty-error-message').hide();
+                // check the qty
+                if(jQuery('#pravams-product-qty').val().length == 0){
+                  jQuery('#qty-error-message').html('Please enter a qty.');
+                  jQuery('#qty-error-message').show();
+                }else {
+                  if (isNaN(parseInt(jQuery('#pravams-product-qty').val())) ){
+                    jQuery('#qty-error-message').html('Please enter an integer qty.');
+                    jQuery('#qty-error-message').show();
+                  }else{
+                    createEmptyCart(selectedProductId);
+                  }
+                }
+
+              }); // end of product buy click
+              
+            }); // end of product view click
+
+          }); // end of productlist call
+
+        } // end of function generateProductlist
+
+        jQuery('#pravams-cart-link').click(function(){
+          var cartId = getCartId();
+          if(cartId != undefined ){
+            viewCart(cartId);
+          }else{
+            jQuery('#top-error-message').html('Your cart is empty!');
+            errorShowHide();
+          }
+          
+        });
+
+        function createEmptyCart(selectedProductId){
+          //create empty cart
+          if(getCartId() != null){
+            cartId = getCartId();
+            customAddToCart(cartId, selectedProductId);
+          }else{
+            var createCartURL = "<?php echo $baseUrl?>rest/default/V1/guest-carts";
+            jQuery.post(createCartURL,
+            function(data, status){
+                if(status == "success"){
+                  jQuery('#pravams-cart-id').val(data);
+                  sessionStorage.setItem("pravams-cart-id", data);
+                  cartId = data;
+                  customAddToCart(cartId, selectedProductId);
+                }
+            });
+          }
+
+          function customAddToCart(cartId, selectedProductId){
+              //get the quoteId for the cart
+              var getCartURL = "<?php echo $baseUrl?>rest/default/V1/guest-carts/"+cartId;
+              jQuery.get(getCartURL,
+                function(data, status){
+                    if(status == "success"){
+                      quoteId = data.id;
+
+                      for(var jCount=1; jCount<jLength; jCount++){
+                      if(allproducts[jCount].id == selectedProductId){
+                          var currentProduct = allproducts[jCount];
+                          var prodQty = jQuery('#pravams-product-qty').val();
+                          var addTocartParams = '{ "cartItem": {"sku": "'+currentProduct.sku+'" , "qty": "'+prodQty+'", "name": "'+currentProduct.name+'", "price": "'+currentProduct.price+'", "product_type" : "'+currentProduct.type_id+'", "quote_id": "'+quoteId+'" }}';
+                          var addToCartUrl = "<?php echo $baseUrl?>rest/default/V1/guest-carts/"+cartId+'/items';
+                          jQuery.ajax({
+                              type: "POST",
+                              url: addToCartUrl,
+                              dataType: "json",
+                              contentType: 'application/json',
+                              beforeSend: function(){
+                                  /*var loadingImage="<img src=\"<?= $block->escapeUrl($block->getViewFileUrl('images/loader-1.gif')) ?>\" alt=\"<?= $block->escapeUrl(__('Loading...')) ?>\" style=\"position: absolute;\">";
+                                  jQuery(".table-checkout-shipping-method tbody").remove();
+                                  jQuery(".table-checkout-shipping-method thead").append('<tbody><tr><td>'+loadingImage+'</td></tr></tbody>');*/
+                              },
+                              success: function (respData) { 
+                                  jQuery('#top-success-message').html('Your product is added to the cart !');
+                                  successShowHide();
+                              },
+                              data: addTocartParams
+                            });
+                        }
+                      }
+
+                    }
+                });
+            }// end of function customAddToCart
+        }// end of createEmpty cart
+
+        function viewCart(cartId){
+          var getCartURL = "<?php echo $baseUrl?>rest/default/V1/guest-carts/"+cartId;
+          var searchSku = [];
+          var cartItemsQty = [];
+          var cartItemsId = [];
+          jQuery.getJSON(getCartURL, function(result){
+            if(result.items!=undefined){
+              for(var pCount=0; pCount<result.items.length; pCount++){
+                searchSku[pCount] = result.items[pCount].sku;
+                var cartItemSku = result.items[pCount].sku;
+                cartItemsQty[cartItemSku] = result.items[pCount].qty;
+                cartItemsId[cartItemSku] = result.items[pCount].item_id;
+              }
+              var searcString = searchSku.join();
+              // get the product images
+              var cartProductsURL = "<?php echo $baseUrl?>rest/default/V1/products?searchCriteria[currentPage]=1&searchCriteria[filterGroups][0][filters][0][conditionType]=in&searchCriteria[filterGroups][0][filters][0][field]=sku&searchCriteria[filterGroups][0][filters][0][value]="+searcString;
+              jQuery.getJSON(cartProductsURL, function(result){
+                var cartHTML = '<div class="w3-col l3 s6" style="width: 100%;border-bottom: 1px solid black;"><div class="w3-container" style="width: 60%;float: left;"><b>Item</b></div><div class="w3-container" style="width: 10%;float: left;"><b>Price</b></div><div class="w3-container" style="width: 10%;float: left;"><b>Qty</b></div><div class="w3-container" style="width: 10%;float: left;"><b>Subtotal</b></div><div class="w3-container" style="width: 10%;float: left;"></div></div>';
+                var productTotal = 0;
+                if(result.items.length == 0){
+                  jQuery('#top-error-message').html('Your cart is empty!');
+                  errorShowHide();
+                  setTimeout(refreshPage, 6000);
+                }
+                for(var itemsCount=0; itemsCount<result.items.length; itemsCount++){
+                  var cartItemsku = result.items[itemsCount].sku;
+                  var cartItemName = result.items[itemsCount].name;
+                  var cartItemPrice = result.items[itemsCount].price;
+                  var cartItemQty = cartItemsQty[cartItemsku];
+                  var cartItemId = cartItemsId[cartItemsku];
+                  var cartItemImage = '<?php echo $baseUrl?>/media/catalog/product'+result.items[itemsCount].media_gallery_entries[0].file;
+                  productTotal = productTotal+cartItemPrice*cartItemQty;
+                  cartHTML = cartHTML+'<div class="w3-col l3 s6 w3-text-red" style="width: 100%;"><div class="w3-container" style="width: 30%;float: left;"><div class="w3-display-container"><img src="'+cartItemImage+'" style="width:50%" \><div class="w3-display-middle w3-display-hover"></div></div></div><div class="w3-container" style="width: 30%;float: left;">'+cartItemName+'</div><div class="w3-container" style="width: 10%;float: left;"><?php echo $currencySymbol;?>'+cartItemPrice+'</div><div class="w3-container" style="width: 10%;float: left;">'+cartItemQty+'</div><div class="w3-container" style="width: 10%;float: left;text-align: right;"><?php echo $currencySymbol;?>'+cartItemPrice*cartItemQty+'</div><div class="w3-container" style="width: 10%;float: left;"><i style="cursor: pointer;" class="fa fa-times pravams-delete-cart-item" cart-item-id="'+cartItemId+'" aria-hidden="true"></i></div></div>';
+                }
+                cartHTML = cartHTML+'<div class="w3-col l3 s6" style="width: 100%;border-top: 1px solid black;"><div class="w3-container" style="width: 60%;float: left;"><b></b></div><div class="w3-container" style="width: 20%;float: left;"><b>Product Total</b></div><div class="w3-container" style="width: 10%;float: left;text-align: right;"><b><?php echo $currencySymbol;?>'+productTotal+'</b></div><div class="w3-container" style="width: 10%;float: left;text-align: right;"></div></div>';
+                cartHTML = cartHTML+'<div class="w3-col l3 s6" style="width: 100%;text-align: right;padding: 29px;"><div class="w3-container" style="width: 100%;float: right;"><button class="w3-button w3-red pravams-checkout-shipping">Proceed to Checkout <i class="fa fa-shopping-cart"></i></button></div></div>';
+                jQuery('#pravams-cat-prod-list').html(cartHTML);
+                jQuery('#pravams-cat-name').html('Shopping Cart');
+                jQuery('#pravams-cat-name').show();
+                jQuery('#pravams-home-banner').hide();
+                viewCheckoutShipping();
+                deleteCartItems();
+              });
+            }else{
+              jQuery('#top-error-message').html('Your cart is empty!');
+              errorShowHide();
+            }
+          });
+        }// end of view cart
+
+        function deleteCartItems(){
+          jQuery('.pravams-delete-cart-item').click(function(){
+            var itemId = jQuery(this).attr('cart-item-id');
+            cartId = getCartId();
+            var cartItemDeleteUrl = "<?php echo $baseUrl?>/rest/default/V1/guest-carts/"+cartId+"/items/"+itemId;
+            console.log(itemId);
+            jQuery.ajax({
+                type: "DELETE",
+                url: cartItemDeleteUrl,
+                success: function (respData) {
+                  if(respData == true){
+                    jQuery('#top-success-message').html('Product is removed from the cart!');
+                    successShowHide();
+                    viewCart(cartId);
+                  }
+                }
+              });
+          });
+        }// end of delete cart items
+
+        function viewCheckoutShipping(){
+          jQuery('.pravams-checkout-shipping').click(function(){
+            var shippingHTML = '<div class="w3-col l3 s6" style="width: 100%;text-align: left;padding: 29px;"><div class="w3-container" style="width: 100%;float: right;">';
+            shippingHTML = shippingHTML+'<p style="width:20%; float:left;">Email Address: </p><p style="width:80%; float:left;"><span id="pravams-shipping-address-email-error" class="w3-text-red" style="display:none">Please enter an Email.</span><input class="w3-input w3-border" id="pravams-shipping-address-email" type="text" placeholder="Enter e-mail" style="width:70%" /></p>';
+            shippingHTML = shippingHTML+'<p style="width:20%; float:left;">First Name: </p><p style="width:80%; float:left;"><span id="pravams-shipping-address-firstname-error" class="w3-text-red" style="display:none">Please enter Firstname.</span><input class="w3-input w3-border" id="pravams-shipping-address-firstname" type="text" placeholder="Enter First Name" style="width:70%" /></p>';
+            shippingHTML = shippingHTML+'<p style="width:20%; float:left;">Last Name: </p><p style="width:80%; float:left;"><span id="pravams-shipping-address-lastname-error" class="w3-text-red" style="display:none">Please enter Lastname.</span><input class="w3-input w3-border" id="pravams-shipping-address-lastname" type="text" placeholder="Enter Last Name" style="width:70%" /></p>';
+            //shippingHTML = shippingHTML+'<p style="width:20%; float:left;">Company: </p><p style="width:80%; float:left;"><input class="w3-input w3-border" id="pravams-shipping-address-company" type="text" placeholder="Enter Company" style="width:70%"></p>';
+            shippingHTML = shippingHTML+'<p style="width:20%; float:left;">Street Address: </p><p style="width:80%; float:left;"><span id="pravams-shipping-address-street-error" class="w3-text-red" style="display:none">Please enter Street Address.</span><input class="w3-input w3-border" id="pravams-shipping-address-street-address" type="text" placeholder="Enter Street Address" style="width:70%" /></p>';
+            shippingHTML = shippingHTML+'<p style="width:20%; float:left;">Country: </p><p style="width:80%; float:left;"><span id="pravams-shipping-address-country-error" class="w3-text-red" style="display:none">Please select a Country.</span><select class="w3-input w3-border" id="pravams-shipping-country" type="text" placeholder="Select Country" style="width:70%"></select></p>';
+            shippingHTML = shippingHTML+'<p style="width:20%; float:left;">State/Province: </p><p style="width:80%; float:left;" id="pravams-checkout-state"><span id="pravams-checkout-state-field-error" class="w3-text-red" style="display:none">Please select/enter a State.</span><input id="pravams-checkout-state-field" class="w3-input w3-border" type="text" placeholder="Enter state/province" style="width:70%"/></p>';
+            shippingHTML = shippingHTML+'<p style="width:20%; float:left;">City: </p><p style="width:80%; float:left;"><span id="pravams-shipping-address-city-error" class="w3-text-red" style="display:none">Please enter City.</span><input class="w3-input w3-border" id="pravams-shipping-address-city" type="text" placeholder="Enter City" style="width:70%" /></p>';
+            shippingHTML = shippingHTML+'<p style="width:20%; float:left;">Zip/Postal Code: </p><p style="width:80%; float:left;"><span id="pravams-shipping-address-zipcode-error" class="w3-text-red" style="display:none">Please enter Zipcode.</span><input class="w3-input w3-border" id="pravams-shipping-address-zipcode" type="text" placeholder="Enter Zip/Postal code" style="width:70%" /></p>';
+            shippingHTML = shippingHTML+'<p style="width:20%; float:left;">Phone Number: </p><p style="width:80%; float:left;"><input class="w3-input w3-border" id="pravams-shipping-address-phone" type="text" placeholder="Enter Phone Number" style="width:70%" /></p>';
+            shippingHTML = shippingHTML+'<div class="w3-col l3 s6" style="width: 100%;text-align: right;padding: 29px;"><div class="w3-container" style="width: 100%;float: right;"><button class="w3-button w3-red pravams-checkout-shipping-address">Next <i class="fa fa-shopping-cart"></i></button></div></div>';
+
+            shippingHTML = shippingHTML+'</div></div>';
+            jQuery('#pravams-cat-prod-list').html(shippingHTML);
+            jQuery('#pravams-cat-name').html('Shipping');
+            jQuery('#pravams-product-count').html('Shipping address');
+            jQuery('#pravams-product-count').show(); 
+            var reloadCountries = true;
+            getCountriesList(reloadCountries);
+            getShippingMethod();
+            reloadShippingAddress();
+
+          });
+        }// end of viewCheckoutShipping
+
+        
+        function getCountriesList(reloadCountries){
+          var countriesList = [];
+          var statesList = [];
+          var getCountriesURL = "<?php echo $baseUrl?>rest/default/V1/directory/countries";
+          jQuery.get(getCountriesURL,
+            function(data, status){
+              var optionHTML = '<option value="">Select Country</option>';
+              jQuery('#pravams-shipping-country').append(optionHTML);
+              for(var countryCount=0; countryCount<data.length; countryCount++){
+                countriesList[data[countryCount].id]=data[countryCount].full_name_english;
+                if(data[countryCount].full_name_english != null){
+                  var optionHTML = '<option value="'+data[countryCount].id+'">'+data[countryCount].full_name_english+'</option>';
+                  jQuery('#pravams-shipping-country').append(optionHTML);
+                }
+              }
+              getStatesList();
+              if(reloadCountries){
+                reloadShippingAddress();
+              }
+            });
+        }// end of get countries list
+
+        function getStatesList(){
+          jQuery('#pravams-shipping-country').change(function(){
+            var selCountry = jQuery('#pravams-shipping-country').val();
+            getStatesListData(selCountry, null);
+          });
+        }// end of get states list
+
+        function getStatesListData(selCountry, shipAddress){
+            var getStatesURL = "<?php echo $baseUrl?>rest/default/V1/directory/countries/"+selCountry;
+            jQuery.get(getStatesURL,
+              function(data, status){
+                if(data.available_regions!=undefined){
+                  jQuery('#pravams-checkout-state').html('<span id="pravams-checkout-state-field-error" class="w3-text-red" style="display:none">Please select a State.</span><select class="w3-input w3-border" id="pravams-checkout-state-field" type="text" placeholder="Select State, region or province" style="width:70%"></select>');
+                  var optionHTML = '<option value="">Select State, region or province</option>';
+                  jQuery('#pravams-checkout-state-field').append(optionHTML);
+                  var allRegions = data.available_regions;
+                  for(var stateCount=0; stateCount<allRegions.length; stateCount++){
+                    var optionHTML = '<option state-code="'+allRegions[stateCount].code+'" value="'+allRegions[stateCount].id+'">'+allRegions[stateCount].name+'</option>';
+                    jQuery('#pravams-checkout-state-field').append(optionHTML);
+                  }
+                }else{
+                  jQuery('#pravams-checkout-state').html('<span id="pravams-checkout-state-field-error" class="w3-text-red" style="display:none">Please enter a State.</span><input id="pravams-checkout-state-field" class="w3-input w3-border" type="text" placeholder="Enter State, region or province" style="width:70%"/>');
+                }
+
+                if(shipAddress != null){
+                  // check if address has state drop down
+                  if(isNaN(parseInt(shipAddress.region_id)) == true){
+                    jQuery('#pravams-checkout-state-field').val(shipAddress.region);
+                  }else{
+                    jQuery('#pravams-checkout-state-field').val(shipAddress.region_id);
+                  }
+                }
+              });
+        } //end of function get states list data
+
+        function getShippingMethod(){
+
+          jQuery('.pravams-checkout-shipping-address').click(function(){
+            var addressFlag = true;
+            shippingAddressJson = addressValidation(addressFlag);
+
+            //var shippingAddressJson = '{  "address": {"region": "Assam","region_id": 572,"region_code": "AS","country_id": "IN","street": ["123 addr"],"telephone": "98988989","postcode": "234234","city": "asdas","firstname": "prashan","lastname": "mishra","email": "pravams@gmail.com","same_as_billing": 1,"save_in_address_book": 0}}';
+            cartId = getCartId();
+            var shippingAddressURL = "<?php echo $baseUrl?>rest/default/V1/guest-carts/"+cartId+'/estimate-shipping-methods';
+            if(shippingAddressJson){
+              jQuery.ajax({
+                type: "POST",
+                url: shippingAddressURL,
+                dataType: "json",
+                contentType: 'application/json',
+                beforeSend: function(){
+                },
+                success: function (respData) {
+                  showShippingMethods(respData, shippingAddressJson);
+                },
+                data: shippingAddressJson,
+                error: function(err){
+                  alert(err.responseJSON.message);
+                }
+              });
+            }
+          });
+        }// end of get shipping method
+
+        function addressValidation(addressFlag){
+
+            jQuery('#pravams-shipping-address-email-error').hide();
+            jQuery('#pravams-shipping-address-firstname-error').hide();
+            jQuery('#pravams-shipping-address-lastname-error').hide();
+            jQuery('#pravams-shipping-address-street-error').hide();
+            jQuery('#pravams-shipping-address-country-error').hide();
+            jQuery('#pravams-checkout-state-field-error').hide();
+            jQuery('#pravams-shipping-address-city-error').hide();
+            jQuery('#pravams-shipping-address-zipcode-error').hide();
+
+            var email = jQuery('#pravams-shipping-address-email').val();
+            if(email.length == 0){
+              jQuery('#pravams-shipping-address-email-error').show();
+              jQuery('#pravams-shipping-address-email-error').html('Please enter an Email');
+              addressFlag = false;
+            }else{
+              // check valid email
+              var validEmail = validateEmail(email);
+              if(validEmail == false){
+                jQuery('#pravams-shipping-address-email-error').show();
+                jQuery('#pravams-shipping-address-email-error').html('Please enter a valid Email');
+                addressFlag = false;
+              }
+            }
+            var firstname = jQuery('#pravams-shipping-address-firstname').val();
+            if(firstname.length == 0){
+              jQuery('#pravams-shipping-address-firstname-error').show();
+              jQuery('#pravams-shipping-address-firstname-error').html('Please enter Firstname');
+              addressFlag = false;
+            }
+            
+            var lastname = jQuery('#pravams-shipping-address-lastname').val();
+            if(lastname.length == 0){
+              jQuery('#pravams-shipping-address-lastname-error').show();
+              jQuery('#pravams-shipping-address-lastname-error').html('Please enter Lastname');
+              addressFlag = false;
+            }
+
+            //var company = jQuery('#pravams-shipping-address-company').val();
+            var streetAddress = jQuery('#pravams-shipping-address-street-address').val();
+            if(streetAddress.length == 0){
+              jQuery('#pravams-shipping-address-street-error').show();
+              jQuery('#pravams-shipping-address-street-error').html('Please enter Street Address');
+              addressFlag = false;
+            }
+
+            var country = jQuery('#pravams-shipping-country').val();
+            if(country.length == 0){
+              jQuery('#pravams-shipping-address-country-error').show();
+              jQuery('#pravams-shipping-address-country-error').html('Please select a Country');
+              addressFlag = false;
+            }
+            
+            var stateId = jQuery('#pravams-checkout-state-field').val();
+            if(stateId.length == 0){
+              jQuery('#pravams-checkout-state-field-error').show();
+              jQuery('#pravams-checkout-state-field-error').html('Please enter a State');
+              addressFlag = false;
+            }
+            
+            var stateName = jQuery('#pravams-checkout-state-field option:selected').text();
+            var stateCode = jQuery('#pravams-checkout-state-field option:selected').attr('state-code');
+            var city = jQuery('#pravams-shipping-address-city').val();
+            if(city.length == 0){
+              jQuery('#pravams-shipping-address-city-error').show();
+              jQuery('#pravams-shipping-address-city-error').html('Please enter City');
+              addressFlag = false;
+            }
+
+            var zipcode = jQuery('#pravams-shipping-address-zipcode').val();
+            if(zipcode.length == 0){
+              jQuery('#pravams-shipping-address-zipcode-error').show();
+              jQuery('#pravams-shipping-address-zipcode-error').html('Please enter Zipcode');
+              addressFlag = false;
+            }
+
+            var phone = jQuery('#pravams-shipping-address-phone').val();
+
+            // check if state is a drop down or not
+            if(isNaN(parseInt(jQuery('#pravams-checkout-state-field').val())) == true){
+              stateName = stateId;
+              stateId = null;
+              stateCode = null;
+            }
+
+            var shippingAddressJson = '{  "address": {"region": "'+stateName+'","region_id": '+stateId+',"region_code": "'+stateCode+'","country_id": "'+country+'","street": ["'+streetAddress+'"],"telephone": "'+phone+'","postcode": "'+zipcode+'","city": "'+city+'","firstname": "'+firstname+'","lastname": "'+lastname+'","email": "'+email+'","same_as_billing": 0,"save_in_address_book": 0} }';
+            if(addressFlag){
+              return shippingAddressJson;
+            }else{
+              return addressFlag;
+            }
+        }// end of address validation
+
+        function reloadShippingAddress(){
+          var cartId = getCartId();
+          var viewCartURL = "<?php echo $baseUrl?>rest/default/V1/guest-carts/"+cartId;
+          jQuery.ajax({
+              type: "GET",
+              url: viewCartURL,
+              dataType: "json",
+              contentType: 'application/json',
+              success: function (respData) {
+                if(respData.extension_attributes.shipping_assignments[0].shipping.address.id != undefined){
+                  var shipAddress = respData.extension_attributes.shipping_assignments[0].shipping.address;
+                  jQuery('#pravams-shipping-address-email').val(shipAddress.email);
+                  jQuery('#pravams-shipping-address-firstname').val(shipAddress.firstname);
+                  jQuery('#pravams-shipping-address-lastname').val(shipAddress.lastname);
+                  jQuery('#pravams-shipping-address-street-address').val(shipAddress.street.toString());
+                  jQuery('#pravams-shipping-country').val(shipAddress.country_id);
+                  if(shipAddress.country_id != null){
+                    getStatesListData(shipAddress.country_id, shipAddress);
+                  }
+                  jQuery('#pravams-shipping-address-city').val(shipAddress.city);
+                  jQuery('#pravams-shipping-address-zipcode').val(shipAddress.postcode);
+                  jQuery('#pravams-shipping-address-phone').val(shipAddress.telephone);
+                }
+              }
+            });
+        }
+
+        function showShippingMethods(respData, shippingAddressJson){
+          var shippingMethodHTML = '';
+          jQuery('#pravams-cat-name').html('Shipping');
+          jQuery('#pravams-product-count').html('Shipping Method');
+          for(var smCount=0; smCount<respData.length; smCount++){
+            shippingMethodHTML = shippingMethodHTML+'<div class="w3-col l3 s6" style="width: 100%;text-align: left;padding: 29px;"><div class="w3-container" style="width: 100%;float: right;">';
+            shippingMethodHTML = shippingMethodHTML+'<p style="width:5%; float:left;"><input class="w3-input w3-border" name="pravams-shipping-method" carrier_code="'+respData[smCount].carrier_code+'" type="radio" style="width:100%;margin: 5px 5px 0 0;" value="'+respData[smCount].method_code+'"/></p>';
+            shippingMethodHTML = shippingMethodHTML+'<p style="width:5%; float:left;"><?php echo $currencySymbol;?>'+respData[smCount].amount+'</p>';
+            shippingMethodHTML = shippingMethodHTML+'<p style="width:10%; float:left;">'+respData[smCount].method_title+'</p>';
+            shippingMethodHTML = shippingMethodHTML+'<p style="width:20%; float:left;">'+respData[smCount].carrier_title+'</p>';
+            shippingMethodHTML = shippingMethodHTML+'</div></div>';
+          }
+          shippingMethodHTML = shippingMethodHTML+'<div class="w3-col l3 s6" style="width: 100%;text-align: right;padding: 29px;"><div class="w3-container" style="width: 100%;float: right;"><button class="w3-button w3-red pravams-checkout-shipping-method">Next <i class="fa fa-shopping-cart"></i></button></div></div>';
+          jQuery('#pravams-cat-prod-list').html(shippingMethodHTML);
+          setShipppingAddress(shippingAddressJson);
+        }// end of show shipping methods
+
+        function setShipppingAddress(shippingAddressJson){
+          jQuery('.pravams-checkout-shipping-method').click(function(){
+            jQuery('#top-error-message').hide();
+            //check if shipping method is selected
+            if(jQuery('input[name="pravams-shipping-method"]:checked').val() == undefined){
+              jQuery('#top-error-message').show();
+              jQuery('#top-error-message').html('Please select a shipping method');
+            }else{
+            var carrierCode = jQuery('input[name="pravams-shipping-method"]:checked').attr('carrier_code');
+            var methodCode = jQuery('input[name="pravams-shipping-method"]:checked').val();
+            var shipAddJson = JSON.parse(shippingAddressJson).address;
+            var shipInfoJson = '{"addressInformation": {"shipping_address": '+JSON.stringify(shipAddJson)+' ,"shipping_method_code": "'+methodCode+'","shipping_carrier_code": "'+carrierCode+'"}}';
+            cartId = getCartId();
+            var shippingInformationURL = "<?php echo $baseUrl?>rest/default/V1/guest-carts/"+cartId+'/shipping-information';
+            jQuery.ajax({
+                type: "POST",
+                url: shippingInformationURL,
+                dataType: "json",
+                contentType: 'application/json',
+                success: function (respData) {
+                  //showBilingAddress(respData, shippingAddressJson);
+                  reviewItems(respData, shippingAddressJson);
+                },
+                data: shipInfoJson
+              });
+            }
+            
+          });
+        } // end of set shipping address
+
+        function showBilingAddress(respData, shippingAddressJson, billingAddHTML){
+          var shipAddData = JSON.parse(shippingAddressJson);
+          var paymentEmail = shipAddData.address.email;
+          jQuery('#pravams-cat-name').html('Payments and Review');
+          jQuery('#pravams-product-count').html('Items Review');
+          billingAddHTML = billingAddHTML+'<div class="w3-container w3-text-grey"><p style="padding-top: 30px;">Billing Address</p></div>';
+          billingAddHTML = billingAddHTML+'<div class="w3-col l3 s6" style="width: 100%;text-align: left;padding: 29px;"><div class="w3-container" style="width: 100%;float: right;">';
+          billingAddHTML = billingAddHTML+'<p style="width:5%; float:left;"><input type="checkbox" id="pravams-checkout-address-same" checked="checked"/></p><p style="width:95%; float:left;">My Billing address is same as Shipping</p>';
+          billingAddHTML = billingAddHTML+'<div class="bill-ship-address">';
+          billingAddHTML = billingAddHTML+'<p style="width:100%; float:left;">'+shipAddData.address.firstname+' '+shipAddData.address.lastname+'</p>';
+          billingAddHTML = billingAddHTML+'<p style="width:100%; float:left;">'+shipAddData.address.street.toString()+'</p>';
+          billingAddHTML = billingAddHTML+'<p style="width:100%; float:left;">'+shipAddData.address.city+', '+shipAddData.address.region+' '+shipAddData.address.postcode+'</p>';
+          billingAddHTML = billingAddHTML+'<p style="width:100%; float:left;">'+shipAddData.address.country_id+'</p>';
+          billingAddHTML = billingAddHTML+'<p style="width:100%; float:left;">'+shipAddData.address.telephone+'</p>';
+          billingAddHTML = billingAddHTML+'</div>';
+          billingAddHTML = billingAddHTML+'<div class="bill-only-address" style="display:none;">';
+          billingAddHTML = billingAddHTML+'<p style="width:20%; float:left;">Email Address: </p><p style="width:80%; float:left;"><span id="pravams-shipping-address-email-error" class="w3-text-red" style="display:none">Please enter an Email.</span><input class="w3-input w3-border" id="pravams-shipping-address-email" type="text" placeholder="Enter e-mail" style="width:70%" /></p>';
+          billingAddHTML = billingAddHTML+'<p style="width:20%; float:left;">First Name: </p><p style="width:80%; float:left;"><span id="pravams-shipping-address-firstname-error" class="w3-text-red" style="display:none">Please enter Firstname.</span><input class="w3-input w3-border" id="pravams-shipping-address-firstname" type="text" placeholder="Enter First Name" style="width:70%" /></p>';
+          billingAddHTML = billingAddHTML+'<p style="width:20%; float:left;">Last Name: </p><p style="width:80%; float:left;"><span id="pravams-shipping-address-lastname-error" class="w3-text-red" style="display:none">Please enter Lastname.</span><input class="w3-input w3-border" id="pravams-shipping-address-lastname" type="text" placeholder="Enter Last Name" style="width:70%" /></p>';
+          billingAddHTML = billingAddHTML+'<p style="width:20%; float:left;">Street Address: </p><p style="width:80%; float:left;"><span id="pravams-shipping-address-street-error" class="w3-text-red" style="display:none">Please enter Street Address.</span><input class="w3-input w3-border" id="pravams-shipping-address-street-address" type="text" placeholder="Enter Street Address" style="width:70%" /></p>';
+          billingAddHTML = billingAddHTML+'<p style="width:20%; float:left;">Country: </p><p style="width:80%; float:left;"><span id="pravams-shipping-address-country-error" class="w3-text-red" style="display:none">Please select a Country.</span><select class="w3-input w3-border" id="pravams-shipping-country" type="text" placeholder="Select Country" style="width:70%"></select></p>';
+          billingAddHTML = billingAddHTML+'<p style="width:20%; float:left;">State/Province: </p><p style="width:80%; float:left;" id="pravams-checkout-state"><span id="pravams-checkout-state-field-error" class="w3-text-red" style="display:none">Please select/enter a State.</span><input id="pravams-checkout-state-field" class="w3-input w3-border" type="text" placeholder="Enter state/province" style="width:70%"/></p>';
+          billingAddHTML = billingAddHTML+'<p style="width:20%; float:left;">City: </p><p style="width:80%; float:left;"><span id="pravams-shipping-address-city-error" class="w3-text-red" style="display:none">Please enter City.</span><input class="w3-input w3-border" id="pravams-shipping-address-city" type="text" placeholder="Enter City" style="width:70%" /></p>';
+          billingAddHTML = billingAddHTML+'<p style="width:20%; float:left;">Zip/Postal Code: </p><p style="width:80%; float:left;"><span id="pravams-shipping-address-zipcode-error" class="w3-text-red" style="display:none">Please enter Zipcode.</span><input class="w3-input w3-border" id="pravams-shipping-address-zipcode" type="text" placeholder="Enter Zip/Postal code" style="width:70%" /></p>';
+          billingAddHTML = billingAddHTML+'<p style="width:20%; float:left;">Phone Number: </p><p style="width:80%; float:left;"><input class="w3-input w3-border" id="pravams-shipping-address-phone" type="text" placeholder="Enter Phone Number" style="width:70%" /></p>';
+          billingAddHTML = billingAddHTML+'</div>';
+          billingAddHTML = billingAddHTML+'</div></div>';
+
+          billingAddHTML = billingAddHTML+'<div class="w3-container w3-text-grey" ><p style="">Payment Methods</p></div>';
+          for(var smCount=0; smCount<respData.payment_methods.length; smCount++){
+            billingAddHTML = billingAddHTML+'<div class="w3-col l3 s6" style="width: 100%;text-align: left;padding: 29px;"><div class="w3-container" style="width: 100%;float: right;">';
+            billingAddHTML = billingAddHTML+'<p style="width:5%; float:left;"><input class="w3-input w3-border" name="pravams-payment-method" payment_code="'+respData.payment_methods[smCount].title+'" type="radio" style="width:100%;margin: 5px 5px 0 0;" value="'+respData.payment_methods[smCount].code+'"/></p>';
+            billingAddHTML = billingAddHTML+'<p style="width:95%; float:left;">'+respData.payment_methods[smCount].title+'</p>';
+            billingAddHTML = billingAddHTML+'</div></div>';
+          }
+          billingAddHTML = billingAddHTML+'<div class="w3-col l3 s6" style="width: 100%;text-align: right;padding: 29px;"><div class="w3-container" style="width: 100%;float: right;"><button class="w3-button w3-red pravams-checkout-payment-method">Place Order </button></div></div>';
+          jQuery('#pravams-cat-prod-list').html(billingAddHTML);
+          getCountriesList(false);
+          placeOrder(paymentEmail);
+          
+          // call the billing address api on selection of payment methods
+          var billAddData = shippingAddressJson;
+          jQuery("input[name='pravams-payment-method']").change(function(){
+            if(jQuery('#pravams-checkout-address-same:checked').val() == "on"){
+              setBillingAddress(billAddData, paymentEmail, false) ;
+            }
+          }); // on change of payment method end
+
+          jQuery('#pravams-checkout-address-same').change(function(){
+            if(jQuery('#pravams-checkout-address-same:checked').val() == "on"){
+              jQuery('.bill-ship-address').show();
+              jQuery('.bill-only-address').hide();
+              setBillingAddress(billAddData, paymentEmail, false);
+            }else{
+              // Billing address is different 
+              jQuery('.bill-ship-address').hide();
+              jQuery('.bill-only-address').show();
+            }
+          }); // end of checkbox change
+
+        } // end of show billing address
+
+        function reviewItems(respData, shippingAddressJson){
+          billingAddHTML = "";
+          billingAddHTML = billingAddHTML+'<div class="w3-col l3 s6" style="width: 100%;border-bottom: 1px solid black;">';
+          billingAddHTML = billingAddHTML+'<div class="w3-container" style="width: 40%;float: left;"><b>Item</b></div><div class="w3-container" style="width: 20%;float: left;"><b>Price</b></div><div class="w3-container" style="width: 20%;float: left;"><b>Qty</b></div><div class="w3-container" style="width: 20%;float: left;"><b>Subtotal</b></div>';
+          billingAddHTML = billingAddHTML+'</div>';
+          var cartId = getCartId();
+          var getCartURL = "<?php echo $baseUrl?>rest/default/V1/guest-carts/"+cartId+"/totals";
+          jQuery.getJSON(getCartURL, function(result){
+            var grandTotal = result.grand_total;
+            var shippingTotal = result.shipping_amount;
+            var taxAmount = result.tax_amount;
+            var subTotal = result.subtotal;
+            if(result.items!=undefined){
+              for(var pCount=0; pCount<result.items.length; pCount++){
+                var cartItemName = result.items[pCount].name;
+                var cartItemPrice = result.items[pCount].price;
+                var cartItemQty = result.items[pCount].qty;
+                var cartRowTotal = result.items[pCount].row_total;
+                billingAddHTML = billingAddHTML+'<div class="w3-col l3 s6 w3-text-red" style="width: 100%;">';
+                billingAddHTML = billingAddHTML+'<div class="w3-container" style="width: 40%;float: left;">'+cartItemName+'</div>';
+                billingAddHTML = billingAddHTML+'<div class="w3-container" style="width: 20%;float: left;"><?php echo $currencySymbol;?>'+cartItemPrice+'</div>';
+                billingAddHTML = billingAddHTML+'<div class="w3-container" style="width: 20%;float: left;">'+cartItemQty+'</div>';
+                billingAddHTML = billingAddHTML+'<div class="w3-container" style="width: 20%;float: left;"><?php echo $currencySymbol;?>'+cartRowTotal+'</div>';
+                billingAddHTML = billingAddHTML+'</div>';
+              }
+              billingAddHTML = billingAddHTML+'<div class="w3-col l3 s6" style="width: 100%;border-top: 1px solid black;">';
+              billingAddHTML = billingAddHTML+'<div class="w3-container" style="width: 40%;float: left;"></div><div class="w3-container" style="width: 20%;float: left;"></div>';
+              billingAddHTML = billingAddHTML+'<div class="w3-container" style="width: 20%;float: left;"><b>Subtotal</b><br /><b>Tax</b><br /><b>Shipping</b></div>';
+              billingAddHTML = billingAddHTML+'<div class="w3-container" style="width: 20%;float: left;"><?php echo $currencySymbol;?>'+subTotal+'<br /><?php echo $currencySymbol;?>'+taxAmount+'<br /><?php echo $currencySymbol;?>'+shippingTotal+'</div>';
+              billingAddHTML = billingAddHTML+'</div>';
+              billingAddHTML = billingAddHTML+'<div class="w3-col l3 s6" style="width: 100%;border-top: 1px solid black;font-size: 18px;">';
+              billingAddHTML = billingAddHTML+'<div class="w3-container" style="width: 40%;float: left;"></div><div class="w3-container" style="width: 20%;float: left;"></div>';
+              billingAddHTML = billingAddHTML+'<div class="w3-container" style="width: 20%;float: left;"><b>Grand Total</b></div>';
+              billingAddHTML = billingAddHTML+'<div class="w3-container" style="width: 20%;float: left;"><?php echo $currencySymbol;?>'+grandTotal+'</div>';
+              billingAddHTML = billingAddHTML+'</div>';
+            }else{
+              jQuery('#top-error-message').html('Your cart is empty!');
+              errorShowHide();
+            }
+            showBilingAddress(respData, shippingAddressJson, billingAddHTML);
+          });
+        }
+
+        function setBillingAddress(billAddData, paymentEmail, placeOrder){
+            var paymentMethodCode = jQuery('input[name="pravams-payment-method"]:checked').val();
+            var paymentTitle = jQuery('input[name="pravams-payment-method"]:checked').attr('payment_code');
+            cartId = getCartId();
+            var billingAddressURL = "<?php echo $baseUrl?>rest/default/V1/guest-carts/"+cartId+'/billing-address';
+            jQuery.ajax({
+                type: "POST",
+                url: billingAddressURL,
+                dataType: "json",
+                contentType: 'application/json',
+                success: function (respData) {
+                  if(jQuery('input[name="pravams-payment-method"]:checked').val() != undefined){
+                    if(placeOrder){
+                      setPaymentMethod(paymentMethodCode, paymentTitle, paymentEmail, placeOrder);
+                    }else{
+                      setPaymentMethod(paymentMethodCode, paymentTitle, paymentEmail, false);
+                    }
+                  }
+                },
+                data: billAddData
+              });
+        }// end of set Billing address
+
+        function setPaymentMethod(paymentMethodCode, paymentTitle, paymentEmail, placeOrder){
+            cartId = getCartId();
+            var paymentMethodJson = '{"email": "'+paymentEmail+'","paymentMethod": {"method": "'+paymentMethodCode+'","additional_data": ["'+paymentTitle+'"]}}';
+            var paymentMethodURL = "<?php echo $baseUrl?>rest/default/V1/guest-carts/"+cartId+'/set-payment-information';
+            jQuery.ajax({
+                type: "POST",
+                url: paymentMethodURL,
+                dataType: "json",
+                contentType: 'application/json',
+                success: function (respData) {
+                  if(placeOrder){
+                    orderSubmit(paymentEmail);
+                  }
+                },
+                data: paymentMethodJson
+              });
+        } // end of set payment method
+
+        function placeOrder(paymentEmail){
+          // check before placing the order
+          jQuery('.pravams-checkout-payment-method').click(function(){
+            jQuery('#top-error-message').hide();
+            if(jQuery('input[name="pravams-payment-method"]:checked').val() != undefined){
+              // check if billing address is different
+              if(jQuery('#pravams-checkout-address-same:checked').val() == undefined){
+                var billingAddressJson = addressValidation(true);
+                var placeOrder = true;
+                setBillingAddress(billingAddressJson, paymentEmail, placeOrder);
+              }else{
+                orderSubmit(paymentEmail);
+              }
+            }else{
+              jQuery('#top-error-message').show();
+              jQuery('#top-error-message').html('Please select a payment method');
+            }  
+          });
+        }// end of checking the place order
+
+        function orderSubmit(paymentEmail){
+          cartId = getCartId();
+          var paymentMethodCode = jQuery('input[name="pravams-payment-method"]:checked').val();
+          var paymentTitle = jQuery('input[name="pravams-payment-method"]:checked').attr('payment_code');  
+          var paymentMethodJson = '{"email": "'+paymentEmail+'","paymentMethod": {"method": "'+paymentMethodCode+'","additional_data": ["'+paymentTitle+'"]}}';
+          var paymentMethodURL = "<?php echo $baseUrl?>rest/default/V1/guest-carts/"+cartId+'/payment-information';
+          jQuery.ajax({
+              type: "POST",
+              url: paymentMethodURL,
+              dataType: "json",
+              contentType: 'application/json',
+              success: function (respData) {
+                sessionStorage.removeItem("pravams-cart-id");
+                sessionStorage.clear();
+                alert('Congratulations, your order has been placed !');
+                refreshPage();
+              },
+              data: paymentMethodJson
+            });
+        }// end order submit
+        
+        jQuery('#search-icon').click(function(){
+          jQuery('#pravams-all-categories a').css('background-color', 'white');
+          var searchTerm = jQuery('#search-term').val();
+          if(searchTerm.length == 0){
+            jQuery('#top-error-message').html('Please enter a search term.');
+            errorShowHide();
+          }else{
+            jQuery('#pravams-home-banner').hide();
+            jQuery('#pravams-cat-prod-list').show();
+            jQuery('#pravams-cat-name').show();
+            searchTerm = searchTerm+'%';
+            var productListURL = "<?php echo $baseUrl?>rest/default/V1/products?searchCriteria[currentPage]=1&searchCriteria[filterGroups][0][filters][0][conditionType]=like&searchCriteria[filterGroups][0][filters][0][field]=name&searchCriteria[filterGroups][0][filters][0][value]="+searchTerm;
+            generateProductlist(productListURL);
+            jQuery('#pravams-cat-name').html('Search Results');
+          }
+        });// end of search term
+
+        jQuery('#home-banner-shop').click(function(){
+          if(jQuery('#pravams-all-categories a').length > 0){
+            jQuery('#pravams-all-categories a:eq(0)').click();
+          }
+        });// end of home banner click
+
+        jQuery('.cms-footer-pages p a').click(function(){
+          var pageId = jQuery(this).attr('cmspageid');
+          var viewCMSPageURL = "<?php echo $baseUrl?>rest/default/V1/cmsPage/"+pageId;
+          jQuery.ajax({
+              type: "GET",
+              url: viewCMSPageURL,
+              dataType: "json",
+              contentType: 'application/json',
+              success: function (respData) {
+                jQuery('#pravams-home-banner').hide();
+                jQuery('#pravams-cat-prod-list').show();
+                jQuery('#pravams-cat-prod-list').html(respData.content);
+                jQuery('#pravams-cat-name').show();
+                jQuery('#pravams-cat-name').html(respData.content_heading);
+                jQuery('#pravams-product-count').html('');
+              }
+            });
+        });// end of footer cms pages click
+
+        function validateEmail(email) {
+            const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return pattern.test(email);
+        }// end of valid email
+
+        function errorShowHide(){
+            jQuery("#top-error-message").fadeIn(1000);
+            jQuery("#top-error-message").fadeOut(10000);
+        }// end of error show hide
+
+        function successShowHide(){
+          jQuery("#top-success-message").fadeIn(1000);
+          jQuery("#top-success-message").fadeOut(10000);
+          // end of success show hide
+        }
+
+        function getCartId(){
+          var cartId = sessionStorage.getItem("pravams-cart-id");
+          return cartId;
+        }// end of getCartId
+
+        function refreshPage(){
+          location.reload();
+        }// end of refresh page
+
+    }); // end of jquery main function
+}) // end of requirejs function
+</script>
+
+<script>
+// Accordion 
+function myAccFunc() {
+  var x = document.getElementById("demoAcc");
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+  } else {
+    x.className = x.className.replace(" w3-show", "");
+  }
+}
+
+// Click on the "Jeans" link on page load to open the accordion for demo purposes
+//document.getElementById("myBtn").click();
+
+
+// Open and close sidebar
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+  document.getElementById("myOverlay").style.display = "block";
+}
+ 
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+  document.getElementById("myOverlay").style.display = "none";
+}
+</script>
+
+
+

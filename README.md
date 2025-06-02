@@ -1,5 +1,5 @@
 # magento2-extensions
-Magento 2 custom extensions that enhance magento 2 features:
+Magento 2 custom extensions and themes that enhance magento 2 features:
 
 ## 1.) Recurring Order
 
@@ -21,30 +21,33 @@ This Recurring Order extension for Magento makes it easier for customers to crea
 
 **Download Link:-** <https://github.com/pravams/magento2-extensions/tree/main/app/code/Pravams/RecurringOrder>
 
-## Steps to Install
 
-* Copy app/code/Pravams/RecurringOrder into your magento installation app/code folder
-* run the below commands one by one:
-```bash
-php bin/magento setup:upgrade
-```
-```bash
-php bin/magento setup:di:compile
-```
-```bash
-php bin/magento cache:flush
-```
+## 2.) Headless Theme
 
-## Test Details
-This module has been tested using this tool <https://github.com/magento/magento-coding-standard>
-Environment details are:-
-* Magento 2.4.8
-* Ubuntu 22.04.4 LTS
-* PHP 8.4.6
-* mysql Ver 8.4.5
-* Apache/2.4.52
-* Opensearch 2.19.1
-* Composer version 2.7.9
+This Magento theme, removes the default "head"(mostly CSS) in Magento, and makes it very easy for the front-end developers to replace this head with another head(CSS design) and create a new theme for Magento very quickly, so it is named as a Headless theme.
 
+* Features:-
+
+    * It does not inherit the out of the box Magento’s Luma or the Blank theme’s design or layout. But it is using an open source W3 CSS example template as the base theme design and layout. And this entirely different CSS and HTML is integrated into Magento as a shopping cart theme.
+    * This is a pure "Frontend theme" with changes in HTML, CSS and Javascript only and there are no modifications in the app/code folder.
+    * For the checkout to happen, it is using the default or Out of the box existing REST APIs of Magento.
+    * It is built as a SPA(Single Page Application), which means that all the features of this theme can be accessed without reloading or refreshing the page.
+    * This theme is also open source, so it can be customised easily to convert it into a full fledged eCommerce website as well.
+    * It is created primarily to help the Frontend developer quickly integrate their new designs in the form of HTML, CSS into Magento easily.
+    * It is very simple to use and understand, and requires very less backend module creation knowledge, to customise this theme.
+ 
+* Key points :-
+    * It allows only guest customer checkout currently
+    * It allow first level category navigation
+    * We can List only Simple products
+    * We can View only Simple products
+    * View cart and Remove items if needed
+    * Add Shipping and Billing Address 
+    * Select Shipping method
+    * Select Offline payment method
+    * Place order only as a guest user
+
+
+**Download Link:-** <https://github.com/pravams/magento2-extensions/tree/main/app/design/frontend/Pravams/headless>
 
 
