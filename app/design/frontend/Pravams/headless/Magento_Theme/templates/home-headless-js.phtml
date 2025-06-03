@@ -232,7 +232,6 @@ requirejs(['jquery'], function(jQuery){
                 if(result.items.length == 0){
                   jQuery('#top-error-message').html('Your cart is empty!');
                   errorShowHide();
-                  setTimeout(refreshPage, 6000);
                 }
                 for(var itemsCount=0; itemsCount<result.items.length; itemsCount++){
                   var cartItemsku = result.items[itemsCount].sku;
@@ -743,12 +742,25 @@ requirejs(['jquery'], function(jQuery){
               success: function (respData) {
                 sessionStorage.removeItem("pravams-cart-id");
                 sessionStorage.clear();
-                alert('Congratulations, your order has been placed !');
-                refreshPage();
+                afterOrder(cartId);
               },
               data: paymentMethodJson
             });
         }// end order submit
+
+        function afterOrder(cartId){
+          var getCartURL = "<?php echo $baseUrl?>rest/default/V1/guest-carts/"+cartId;
+          jQuery.get(getCartURL,
+            function(data, status){
+            if(status == "success"){
+              var orderId =  data.reserved_order_id;
+              var respText = "Congratulations, your order #"+orderId+" has been placed successfully!";
+              jQuery('#pravams-cat-prod-list').html("");
+              jQuery('#pravams-cat-name').html('Order Placed');
+              jQuery('#pravams-product-count').html(respText);
+            }
+          });
+        }
         
         jQuery('#search-icon').click(function(){
           jQuery('#pravams-all-categories a').css('background-color', 'white');
