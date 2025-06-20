@@ -77,4 +77,4 @@ This Reward extension for Magento provides a way for the customer to earn Reward
     * Can see the reward points earned and redeemed by every customer
     * Please note that there is a restriction/limit of 24 hours in earning reward points from (Product review and Wishlist activities) successively for the customer
 
-**Download Link:-** <https://github.com/pravams/magento2-extensions/tree/main/app/design/frontend/Pravams/Reward>
+**Download Link:-** <https://github.com/pravams/magento2-extensions/tree/main/app/code/Pravams/Reward>
