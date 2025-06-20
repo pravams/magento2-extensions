@@ -1,0 +1,256 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+$params= $block->getRequest()->getParams();
+$limit = 5;
+$offset = 0;
+$customerId = $block->getCustomerId();
+$pointsTransactionCollection =$block->getPointsTransactionCollection();
+$pointsTransactionCollection->addFieldToFilter('customer_id', $customerId);
+$pointsTransactionCollection->setOrder('entity_id', 'DESC');
+$pointsTransactionCollection->getSelect()->limit($limit, $offset);
+
+$totalRecords = $pointsTransactionCollection->getSize();
+$startPage = 0;
+
+// calculate number of pages
+$numberOfPages = ceil($totalRecords/$limit);
+
+$customerPointsColl = $block->getCustomerPointsCollection();
+$customerPointsColl->addFieldToFilter('customer_id', $customerId);
+$customerPoints = $customerPointsColl->getFirstItem()->getTotalPoints();;
+?>
+<?php if($customerPoints > 0){ ?>
+  <div class="fieldset-wrapper-title">
+      <span class="title">Customer's Total Points: <?php echo $customerPoints;?></span>
+  </div>
+<?php }?>
+<h4 style="padding-top: 18px;">Customer's reward points earned/redeemed history:-</h4>
+<div class="admin__data-grid-wrap" data-role="grid-wrapper">
+    <table class="data-grid data-grid-draggable" data-role="grid">
+       <thead>
+            <tr >
+                <th class="data-grid-multicheck-cell">
+                    <div class="action-multicheck-wrap" >Id</div>
+                </th>
+                <th class="data-grid-multicheck-cell">
+                    <div class="action-multicheck-wrap" >Action</div>
+                </th>
+                <th class="data-grid-multicheck-cell">
+                    <div class="action-multicheck-wrap" >Event</div>
+                </th>
+                <th class="data-grid-multicheck-cell">
+                    <div class="action-multicheck-wrap" >Details</div>
+                </th>
+                <th class="data-grid-multicheck-cell">
+                    <div class="action-multicheck-wrap" >Points</div>
+                </th>
+                <th class="data-grid-multicheck-cell">
+                    <div class="action-multicheck-wrap" >Date</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach($pointsTransactionCollection as $_pointsTransactionCollectionData){ ?>
+                <tr>
+                    <td>
+                         <div class="data-grid-cell-content"><?php echo $_pointsTransactionCollectionData->getEntityId(); ?> </div>
+                    </td>
+                    <td>
+                         <div class="data-grid-cell-content"><?php echo $_pointsTransactionCollectionData->getAction(); ?> </div>
+                    </td>
+                    <td>
+                         <div class="data-grid-cell-content"><?php echo $_pointsTransactionCollectionData->getEvent(); ?> </div>
+                    </td>
+                    <td>
+                         <div class="data-grid-cell-content"><?php echo $_pointsTransactionCollectionData->getEventDetails(); ?> </div>
+                    </td>
+                    <td>
+                         <div class="data-grid-cell-content"><?php echo $_pointsTransactionCollectionData->getPoints(); ?> </div>
+                    </td>
+                    <td>
+                         <div class="data-grid-cell-content"><?php echo $_pointsTransactionCollectionData->getCreatedAt(); ?> </div>
+                    </td>
+            <?php }?>            
+        </tbody>
+    </table>
+</div>
+<div><?php if($totalRecords==0) echo "Sorry, you have not earned any points.";?></div>
+<div>
+    <div class="pager">
+        <?php if($totalRecords>$limit){?>
+        <p class="toolbar-amount">
+        <span class="toolbar-number">Items <?php echo $startPage+1;?> to <?php echo $limit;?> of <?php echo $totalRecords;?> total </span>
+        </p>        
+        <div class="pages">
+            <strong class="label pages-label" id="paging-label">Page</strong>
+            <ul class="items pages-items" aria-labelledby="paging-label">
+                <?php for($i=0 ; $i<$numberOfPages;$i++){
+                    $pagerPage = $i;?>
+                    <li class="item">
+                        <a href="#" class="page <?php if($i==0)echo "sel-page";?>" url="<?php echo $block->getUrl('reward/index/points/',array('p'=> $pagerPage, 'id' => $customerId))?>" pager="<?php echo $pagerPage;?>">
+                            <span class="label">Page</span>
+                            <span><?php echo $pagerPage+1?></span>
+                        </a>                        
+                    </li>
+                <?php }?>
+            </ul>
+        </div>
+        <?php }?>     
+        <!--<div class="limiter">
+            <strong class="limiter-label">Show</strong>
+            <select id="limiter" class="limiter-options">
+                <option value="http://localhost/reward/customer/index/?limit=5" selected="selected">5</option>
+                <option value="http://localhost/reward/customer/index/?limit=10">10</option>
+                <option value="http://localhost/reward/customer/index/?limit=15">15</option>
+                <option value="http://localhost/reward/customer/index/?limit=20">20</option>
+            </select>
+            <span class="limiter-text">per page</span>
+        </div>-->
+    </div>    
+</div>
+
+<script type="text/javascript">
+requirejs(['jquery'], function(jQuery){
+    jQuery(function(){        
+        jQuery('.page').click(function(){
+          jQuery('.page').removeClass('sel-page');
+          jQuery(this).addClass('sel-page');
+
+          var pager = jQuery(this).attr('pager');
+          var limit = "<?php echo $limit;?>";
+          var totalRec = "<?php echo $totalRecords;?>";
+          totalRec = parseInt(totalRec);
+          var startPage = parseInt(pager)*parseInt(limit) +1;
+          var endPage = parseInt(pager)*parseInt(limit) + parseInt(limit);
+          if(totalRec <= endPage){
+            endPage = parseInt(totalRec);
+          }
+          
+          var pageHtml = "Items "+startPage+" to "+endPage+" of "+totalRec+" total";
+          jQuery('.toolbar-number').html(pageHtml);
+
+          var rewardUrl = jQuery(this).attr('url');
+            jQuery.ajax({
+                type: "GET",
+                url: rewardUrl,
+                //dataType: "json",
+                //contentType: 'application/json',
+                success: function (respData) { 
+                  //console.log(respData);
+                  jQuery('.admin__data-grid-wrap').html(respData);
+                }
+                //data: addTocartParams
+              });
+        })
+    });
+});
+</script>
+
+
+<style type="text/css">
+@media (min-width: 768px), print {
+  .toolbar-amount {
+    display: block;
+    float: left;
+    position: static;
+  }
+}
+.toolbar-amount {
+  left: 0;
+  line-height: 18px;
+  margin: 0;
+  padding: 7px 0;
+  text-align: left;
+  top: 0;
+  vertical-align: middle;
+}
+.toolbar-amount {
+  line-height: 18px;
+  text-align: left;
+  padding-right: 10px;
+}
+.pages > .label {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+.pages .items {
+  font-size: 0;
+  letter-spacing: -1px;
+  line-height: 0;
+  white-space: nowrap;
+  margin: 0;
+  padding: 0;
+  list-style: none none;
+  display: inline-block;
+  font-weight: 400;
+}
+.pages .item {
+  font-size: 1.2rem;
+  line-height: 3rem;
+  letter-spacing: normal;
+  margin: 0 8px 0 0;
+  display: inline-block;
+}
+.pages strong.page {
+  background: #e5e5e5;
+  font-size: 1.2rem;
+  line-height: 3rem;
+  letter-spacing: normal;
+  color: #333;
+  display: inline-block;
+  font-weight: 700;
+  padding: 0 5px;
+}
+.pages .item .label {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+.pages strong.page {
+  font-size: 1.2rem;
+  line-height: 3rem;
+  letter-spacing: normal;
+  color: #333;
+  font-weight: 700;
+}
+.pages a.page:visited {
+  color: #006bb4;
+}
+.pages a.page {
+  color: #006bb4;
+  display: inline-block;
+  padding: 0 5px;
+  text-decoration: none;
+}
+.limiter-label {
+  font-weight: 400;
+}
+.limiter-options {
+  margin: 0 5px 0 7px;
+  width: auto;
+}
+.limiter{
+  float: left;
+  width: 100%;
+}
+.sel-page{
+  color: black;
+  cursor: default;
+  background-color: #e5e5e5;
+  font-weight: bold;
+}
+</style>

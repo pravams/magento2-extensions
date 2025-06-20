@@ -1,0 +1,71 @@
+<?php
+/**
+ * Pravams Reward Module
+ *
+ * @category    Pravams
+ * @package     Pravams_Reward
+ * @copyright   Copyright (c) 2022 Pravams  
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0) 
+ */
+
+$customerSession = $block->getCustomerSession();
+$customerData = $customerSession->getCustomer()->getData();
+$customerData = $customerSession->getCustomerData();
+$customerId = $customerSession->getCustomerId();
+$customerPointsCollection = $block->getCustomCollection()->setOrder('created_at', 'DESC');
+
+$pointsCollection = $block->getCustomerPointsCollection();  
+$pointsCollection->addFieldToFilter('customer_id', $customerId);
+
+?>  
+
+<div class="block block-dashboard-info">
+    <div class="block-title">
+    <strong>
+    <?php if(count($customerPointsCollection)==0){
+        echo "You have not earned any points till now";
+    } else { ?> 
+
+        My Total Points: 
+        <?php foreach ($pointsCollection as $_pointsCollectionData) { ?>
+        <?php echo $_pointsCollectionData->getTotalPoints(); ?>
+        <?php } ?>
+
+    <?php } ?>
+    </strong>
+</div>
+</div>
+<h3> 
+</h3>
+
+<h3>My reward points earned/redeemed history:-</h3>
+
+<div class="table-wrapper orders-history">
+    <table class="data table table-order-items history" id="my-orders-table">
+        <caption class="table-caption">Orders</caption>
+        <thead>
+        <tr>
+            <th scope="col" class="col id">Transaction Id</th>
+            <th scope="col" class="col action">Action</th>
+            <th scope="col" class="col event">Event</th>
+            <th scope="col" class="col details">Points</th>
+            <th scope="col" class="col date">Date</th>
+        </tr>
+        </thead>
+        <tbody>
+            <?php foreach($customerPointsCollection as $_customerPointsCollectionData){ ?>
+            <tr>
+                <td data-th="id" class="col id"><?php echo $_customerPointsCollectionData['entity_id']; ?></td>
+                <td data-th="Action" class="col action"><?php echo $_customerPointsCollectionData['action']; ?></td>
+                <td data-th="Event" class="col date"><?php echo $_customerPointsCollectionData['event']; ?></td>
+                <td data-th="Details" class="col date"><?php echo $_customerPointsCollectionData['points']; ?></td>                
+                <td data-th="Date" class="col date"><?php echo $_customerPointsCollectionData['created_at']; ?></td>
+            </tr>
+            <?php } ?>                
+        </tbody>
+    </table>
+</div>
+
+<?php if ($this->getPagerHtml()): ?>
+<div><?php echo $block->getPagerHtml(); ?></div>
+<?php endif ?>

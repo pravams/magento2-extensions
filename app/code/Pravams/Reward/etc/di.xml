@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Checkout\Model\DefaultConfigProvider">
+        <plugin name="intercept_reward_points" type="Pravams\Reward\Plugin\Model\Checkout\Provider\RewardPlugin" sortOrder="10" disabled="false"/>
+    </type>
+    <type name="Magento\Sales\Model\Service\InvoiceService">
+        <plugin name="add_discount_to_invoice" type="Pravams\Reward\Plugin\Model\Sales\Service\InvoiceServicePlugin" sortOrder="10" disabled="false"/>
+    </type>
+    <type name="Magento\Sales\Model\Order\Pdf\Config">
+        <plugin name="add_discount_to_pdf" type="Pravams\Reward\Plugin\Model\Order\Pdf\ConfigPlugin" sortOrder="10" disabled="false"/>
+    </type>
+    <type name="Magento\Sales\Model\Order\CreditmemoFactory">
+        <plugin name="add_discount_to_creditmemo" type="Pravams\Reward\Plugin\Model\Order\CreditmemoPlugin"/>
+    </type>    
+</config>
+
+

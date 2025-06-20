@@ -1,0 +1,8 @@
+<!-- ko if: isDisplayedPsrewarddiscount() -->
+<tr class="totals psrewarddiscount excl">
+   <th class="mark" colspan="1" scope="row" data-bind="text: psreward_discount"></th>
+   <td class="amount">
+       <span class="price" data-bind="text: getPsRewardDiscount(), attr: {'data-th': psreward_discount}"></span>
+   </td>
+</tr>
+<!-- /ko -->

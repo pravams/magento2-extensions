@@ -1,0 +1,102 @@
+<?php
+$customerSession = $block->getCustomerSession();
+$customerData = $customerSession->getCustomer()->getData();
+$customerData = $customerSession->getCustomerData();
+$customerId = $customerSession->getCustomerId();
+$pointsCollection = $block->getCustomerPointsCollection();
+$pointsCollection->addFieldToFilter('customer_id', $customerId);
+$totalPoints = 0;
+$rewardApplied = false;
+
+//$obj = \Magento\Framework\App\ObjectManager::getInstance();
+//$startDate = date('Y-m-d H:i:s', strtotime("-1110 minutes"));
+//$endDate = date('Y-m-d H:i:s', strtotime("+330 minutes"));
+
+//$currency = $obj->get('\Magento\Directory\Model\Currency');
+//$checkoutSession = $obj->get('\Magento\Checkout\Model\Session');
+//$storeManager = $obj->get('\Magento\Store\Model\StoreManagerInterface');
+
+
+$storeManager = $block->getStoreManager();
+$checkoutSession = $block->getCheckoutSession();
+
+if($customerSession->isLoggedIn()){
+    if($checkoutSession->getPsPointsDiscount()){
+        $rewardApplied = true;
+        $pointsRedeemed = $checkoutSession->getPsPointsDiscount();
+        $pointsRedeemedFmt = $storeManager->getStore()->getBaseCurrency()->format( $pointsRedeemed,[], true);
+    }
+    ?>
+    <div class="fieldset coupon" style="float: left;width: 100%;">
+        <form id="ps_points_form" action="<?php echo $this->getUrl('reward/customer/redeem');?>" method="POST">        
+            <?php if(!$rewardApplied){?>
+                <input type="hidden" name="remove" id="remove-coupon" value="0"/>
+                <?php $totalPoints = $pointsCollection->getFirstItem()->getTotalPoints();?>   
+                <div>You have <?php echo $totalPoints;?> Reward Points.</div>
+                <?php if($totalPoints>0){?>
+                    <div>
+                        <label for="ps_points" class="label">
+                            <span>Enter number of points to be redeemed as discount</span>
+                        </label>            
+                    </div>
+                    <div style="width:100%;float:left;padding-bottom: 14px;">
+                        <div class="field" style="width:20%;float:left;">
+                            <div class="control">
+                                <input style="width: 100%;" type="text" class="input-text" id="ps_points" name="ps_points" value="" placeholder="Enter number of points" data-validate="{required:true}" aria-describedby="ps_points-error" aria-invalid="true" />
+                                <div id="ps_points-error" style="display:none;" class="mage-error">This is a required field.</div>
+                            </div>
+                        </div>
+                        <div class="actions-toolbar" style="width:80%;float:left;">
+                            <div class="primary">
+                                <button id="redeem" type="button" value="Redeem Points">
+                                    <span>Redeem points</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                <?php }?>
+            <?php }else{?>
+                    <div>
+                        <label for="ps_points" class="label">
+                            <span>You have redeemed points worth <?php echo $pointsRedeemedFmt;?>.</span>
+                        </label>            
+                    </div>
+                    <div class="primary">
+                        <button id="removeredeem" type="button" value="Redeem Points">
+                            <span>Remove Reward points</span>
+                        </button>
+                    </div>
+                    <input type="hidden" name="remove" id="remove-coupon" value="1"/>
+            <?php }?>        
+        </form>    
+    </div>
+<?php }?>
+<script type="text/javascript">
+requirejs(['jquery'],function(jQuery){
+    jQuery(function(){
+        jQuery(document).ready(function(){
+            // redeem form submission
+            jQuery("#redeem").click(function(){
+                jQuery('#ps_points-error').hide();
+                jQuery('#ps_points').removeClass('mage-error');
+                if(jQuery('#ps_points').val().length == 0){
+                    jQuery('#ps_points').addClass('mage-error');
+                    jQuery('#ps_points-error').show();
+                }else{
+                    jQuery('#ps_points_form').submit();
+                }
+            });
+
+            //remove redeem form submimssion
+            jQuery("#removeredeem").click(function(){
+                jQuery('#ps_points_form').submit();                
+            });
+        });
+    });
+});
+</script>
+
+
+
+
+

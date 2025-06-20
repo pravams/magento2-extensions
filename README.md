@@ -1,6 +1,11 @@
 # magento2-extensions
 Magento 2 custom extensions and themes that enhance magento 2 features:
 
+## List of Extensions
+* [Recurring Order] (#1-recurring-order)
+* [Headless Theme] (#2-headless-theme)
+* [Reward] (#3-reward)
+
 ## 1.) Recurring Order
 
 This Recurring Order extension for Magento makes it easier for customers to create repeat orders by creating subscription orders based on a frequency for offline payment methods.  With this Recurring Order extension, customers can use it to create a subscription for the product. And the order will be placed automatically every week based on the frequency that they select.
@@ -51,3 +56,24 @@ This Magento theme, removes the default "head"(mostly CSS) in Magento, and makes
 **Download Link:-** <https://github.com/pravams/magento2-extensions/tree/main/app/design/frontend/Pravams/headless>
 
 
+## 3.) Reward
+
+This Reward extension for Magento provides a way for the customer to earn Reward points. The reward points are given to the customer for completing an activity. These points can also be redeemed to get discounts on the customer's purchases. This also increases the customers engagement with the site thereby increasing traffic and sales as well.
+
+* Frontend:-
+
+    * Customer earns points for activities like (Registration, Newsletter Subscription, Product Review, Wishlist Sharing and Placing Order)
+    * The customer can view the reward points earned for all his activity
+    * The customer can redeem the points by entering the number of points on the shopping cart page
+    * The cart value is discounted in proportion to the number of points redeemed during checkout    
+    * The customer can also see the number of reward points redeemed as well.
+ 
+* Admin Backend:-
+
+    * These points can be proportioned to the currency value, which is configurable in Magento admin. For example (1 Reward point = $10)
+    * Ability to enable or disable rewards for specific activity also
+    * Assign a custom value of the reward points earned for every activity
+    * Can see the reward points earned and redeemed by every customer
+    * Please note that there is a restriction/limit of 24 hours in earning reward points from (Product review and Wishlist activities) successively for the customer
+
+**Download Link:-** <https://github.com/pravams/magento2-extensions/tree/main/app/design/frontend/Pravams/Reward>

@@ -1,0 +1,27 @@
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="ps_customer_points" resource="default" engine="innodb" comment="Customer Reward Points table">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="Entity Id"/>
+        <column xsi:type="int" name="customer_id" unsigned="true" nullable="false" default="0" comment="Customer Id"/>
+        <column xsi:type="int" name="total_points" unsigned="true" nullable="false" default="0" comment="Total Reward Points"/>
+        <column xsi:type="datetime" name="created_at" on_update="false" nullable="true" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="datetime" name="updated_at" on_update="true" nullable="true" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+    </table>
+    <table name="ps_customer_points_transaction" resource="default" engine="innodb" comment="Customer Reward Points Transactions table">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="Entity Id"/>
+        <column xsi:type="int" name="customer_id" unsigned="true" nullable="false" default="0" comment="Cutomer Id"/>
+        <column xsi:type="int" name="points" unsigned="true" nullable="false" default="0" comment="Reward Points"/>
+        <column xsi:type="varchar" name="order_id" nullable="true" length="50" default="0" comment="Order Id"/>
+        <column xsi:type="decimal" name="redeem_value" nullable="true" scale="4" precision="20" unsigned="false" default="0" comment="Redeem or discount value" />
+        <column xsi:type="varchar" name="action" nullable="false" length="255" comment="Action name"/>
+        <column xsi:type="varchar" name="event" nullable="false" length="255" comment="Event Name" />
+        <column xsi:type="varchar" name="event_details" nullable="false" length="1000" comment="Event Details"/>        
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="true" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="true" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+    </table>
+</schema>

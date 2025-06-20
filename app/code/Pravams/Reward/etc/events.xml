@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework;Event/etc/events.xsd">
+    <event name="customer_register_success">
+        <observer name="pravams_reward_registration_after" instance="Pravams\Reward\Observer\AfterRegistration"/>
+    </event>
+    <event name="controller_action_postdispatch_review_product_post">
+        <observer name="pravams_reward_review_product" instance="Pravams\Reward\Observer\ProductReview"/>
+    </event>
+    <event name="wishlist_share">
+        <observer name="pravams_reward_wishlist_share" instance="Pravams\Reward\Observer\WishlistShare"/>
+    </event>
+    <event name="sales_order_place_after">
+        <observer name="pravams_reward_sales_order_save_after" instance="Pravams\Reward\Observer\PlaceOrderAfter"/>
+    </event>
+</config>

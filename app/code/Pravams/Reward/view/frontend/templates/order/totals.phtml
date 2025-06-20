@@ -1,0 +1,53 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/**
+ * @var $block \Magento\Sales\Block\Order\Totals
+ * @see \Magento\Sales\Block\Order\Totals
+ */
+?>
+<?php 
+$order = $block->getOrder();
+$orderId = $order->getIncrementId();
+
+$obj = \Magento\Framework\App\ObjectManager::getInstance();
+$pointsTransaction = $obj->get('Pravams\Reward\Model\ResourceModel\PointsTransaction\Collection');
+$pointsTransactionData = $pointsTransaction->addFieldToFilter('order_id', $orderId);
+$discountValue = 0;
+if(count($pointsTransactionData)>0){
+    $discountValue = $pointsTransactionData->getFirstItem()->getRedeemValue();
+    $discountValue = number_format($discountValue,2);
+}
+?>
+<?php foreach ($block->getTotals() as $_code => $_total) : ?>
+    <?php if ($_total->getBlockName()) : ?>
+        <?= $block->getChildHtml($_total->getBlockName(), false) ?>
+    <?php else :?>
+        <?php
+        if( ($_code == 'grand_total')  && ($discountValue>0)){?>
+            <tr class="reward">
+                <th <?= /* @noEscape */ $block->getLabelProperties() ?> scope="row">Reward Discount</th>
+                <td class="amount" data-th="Reward Discount"><span class="price"><?php echo $order->formatPrice($discountValue);?></span></td>
+            </tr>
+        <?php } ?>        
+        <tr class="<?= $block->escapeHtmlAttr($_code) ?>">        
+            <th <?= /* @noEscape */ $block->getLabelProperties() ?> scope="row">
+                <?php if ($_total->getStrong()) : ?>
+                    <strong><?= $block->escapeHtml($_total->getLabel()) ?></strong>
+                <?php else : ?>
+                    <?= $block->escapeHtml($_total->getLabel()) ?>
+                <?php endif ?>
+            </th>
+            <td <?= /* @noEscape */ $block->getValueProperties() ?> data-th="<?= $block->escapeHtmlAttr($_total->getLabel()) ?>">
+                <?php if ($_total->getStrong()) : ?>
+                    <strong><?= /* @noEscape */ $block->formatValue($_total) ?></strong>
+                <?php else : ?>
+                    <?= /* @noEscape */ $block->formatValue($_total) ?>
+                <?php endif?>
+            </td>
+        </tr>
+    <?php endif; ?>
+<?php endforeach?>

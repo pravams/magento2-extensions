@@ -1,0 +1,62 @@
+<?php 
+$params= $block->getRequest()->getParams();
+$limit = 5;
+
+$offset = $params['p']*5;
+
+$customerId = $block->getCustomerId();
+$pointsTransactionCollection =$block->getPointsTransactionCollection();
+$pointsTransactionCollection->addFieldToFilter('customer_id', $customerId);
+$pointsTransactionCollection->setOrder('entity_id', 'DESC');
+$pointsTransactionCollection->getSelect()->limit($limit, $offset);
+
+?>
+<div class="admin__data-grid-wrap" data-role="grid-wrapper">
+    <table class="data-grid data-grid-draggable" data-role="grid">
+       <thead>
+            <tr >
+                <th class="data-grid-multicheck-cell">
+                    <div class="action-multicheck-wrap" >Id</div>
+                </th>
+                <th class="data-grid-multicheck-cell">
+                    <div class="action-multicheck-wrap" >Action</div>
+                </th>
+                <th class="data-grid-multicheck-cell">
+                    <div class="action-multicheck-wrap" >Event</div>
+                </th>
+                <th class="data-grid-multicheck-cell">
+                    <div class="action-multicheck-wrap" >Details</div>
+                </th>
+                <th class="data-grid-multicheck-cell">
+                    <div class="action-multicheck-wrap" >Points</div>
+                </th>
+                <th class="data-grid-multicheck-cell">
+                    <div class="action-multicheck-wrap" >Date</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach($pointsTransactionCollection as $_pointsTransactionCollectionData){ ?>
+                <tr>
+                    <td>
+                         <div class="data-grid-cell-content"><?php echo $_pointsTransactionCollectionData->getEntityId(); ?> </div>
+                    </td>
+                    <td>
+                         <div class="data-grid-cell-content"><?php echo $_pointsTransactionCollectionData->getAction(); ?> </div>
+                    </td>
+                    <td>
+                         <div class="data-grid-cell-content"><?php echo $_pointsTransactionCollectionData->getEvent(); ?> </div>
+                    </td>
+                    <td>
+                         <div class="data-grid-cell-content"><?php echo $_pointsTransactionCollectionData->getEventDetails(); ?> </div>
+                    </td>
+                    <td>
+                         <div class="data-grid-cell-content"><?php echo $_pointsTransactionCollectionData->getPoints(); ?> </div>
+                    </td>
+                    <td>
+                         <div class="data-grid-cell-content"><?php echo $_pointsTransactionCollectionData->getCreatedAt(); ?> </div>
+                    </td>
+            <?php }?>            
+        </tbody>
+    </table>
+</div>

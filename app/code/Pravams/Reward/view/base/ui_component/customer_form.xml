@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <htmlContent name="reward_content">
+        <block class="Pravams\Reward\Block\Adminhtml\Edit\Tab\Reward" name="customer_edit_tab_reward">
+            <action method="setTabLabel">
+                <argument name="label" xsi:type="string">Reward Points</argument>
+            </action>
+        </block>
+    </htmlContent>
+</form>

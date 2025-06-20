@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="pravams" translate="label" sortOrder="4000">
+            <label>Pravams</label>
+        </tab>
+        <section id="reward" translate="true" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Reward Points</label>
+            <tab>pravams</tab>
+            <resource>Magento_Customer::config_customer</resource>
+            <group id="reward_points_configuration" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Reward Points Configuration</label>
+                <field id="reward_point_to_currency" translate="label" type="text" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
+                    <label>Number of Points equal to Unit Currency</label>
+                    <comment>Example if 10 points is equal to $1, you can enter 10 here</comment>
+                </field>
+                <field id="reward_registration_status" translate="label" type="select" sortOrder="10" showInDefault="1" showInStore="0" showInWebsite="0" >
+                    <label>Enable Reward Points for Registration?</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="reward_registration_points" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Number of Points earned after Registration</label>
+                </field>
+                <field id="reward_newsletter_status" translate="label" type="select" sortOrder="30" showInDefault="1" showInStore="0" showInWebsite="0">
+                    <label>Enable Reward Points for Newsletter Subscription?</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="reward_newsletter_points" translate="label" type="text" sortOrder="40" showInDefault="1" showInStore="0" showInWebsite="0">
+                    <label>Number of Points earned after Newsletter Subscription</label>
+                </field>
+                <field id="reward_purchase_status" translate="label" type="select" sortOrder="50" showInDefault="1" showInStore="0" showInWebsite="0">
+                    <label>Enable Reward Points after an Order is Placed?</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="reward_purchase_points" translate="label" type="text" sortOrder="60" showInDefault="1" showInStore="0" showInWebsite="0">
+                    <label>Number of Points earned after placing an Order</label>
+                </field>
+                <field id="reward_reviews_status" translate="label" type="select" sortOrder="70" showInDefault="1" showInStore="0" showInWebsite="0">
+                    <label>Enable Reward Points after a Product Review is submitted?</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="reward_reviews_points" translate="label" type="text" sortOrder="80" showInDefault="1" showInStore="0" showInWebsite="0">
+                    <label>Number of Points earned after submitting a Product Review</label>
+                    <comment>Please note that there is a limitation of 24 hours, in earning reward points from this activity successively for the customer</comment>
+                </field>
+                <field id="reward_wishlist_share_status" translate="label" type="select" sortOrder="90" showInDefault="1" showInStore="0" showInWebsite="0">
+                    <label>Enable Reward Points after Sharing a Wishlist?</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="reward_wishlist_share_points" translate="label" type="text" sortOrder="100" showInDefault="1" showInStore="0" showInWebsite="0">
+                    <label>Number of Points earned after sharing a Wishlist</label>
+                    <comment>Please note that there is a limitation of 24 hours, in earning reward points from this activity successively for the customer</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

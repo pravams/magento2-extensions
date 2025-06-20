@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/layout_generic.xsd">
+    <container name="root">
+        <block class="Pravams\Reward\Block\Adminhtml\Edit\Tab\Reward\Page\View" name="customer.reward.edit.tab.points" as="view.points">
+            <arguments>
+                <argument name="template" xsi:type="string">Pravams_Reward::customer/edit/tab/points.phtml</argument>
+            </arguments>
+        </block>
+    </container>
+</layout>

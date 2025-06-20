@@ -1,0 +1,84 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/* @var \Magento\Sales\Block\Adminhtml\Order\Totals $block */
+?>
+<?php 
+$order = $block->getOrder();
+$orderId = $order->getIncrementId();
+
+$obj = \Magento\Framework\App\ObjectManager::getInstance();
+$pointsTransaction = $obj->get('Pravams\Reward\Model\ResourceModel\PointsTransaction\Collection');
+$pointsTransactionData = $pointsTransaction->addFieldToFilter('order_id', $orderId);
+$discountValue = 0;
+if(count($pointsTransactionData)>0){
+    $discountValue = $pointsTransactionData->getFirstItem()->getRedeemValue();
+    $discountValue = number_format($discountValue,2);
+}
+?>
+<table class="data-table admin__table-secondary order-subtotal-table">
+    <?php $_totals = $block->getTotals('footer') ?>
+
+    <?php if ($_totals) : ?>
+        <tfoot>
+            <?php foreach ($block->getTotals('footer') as $_code => $_total) : ?>
+                <?php if ($_total->getBlockName()) : ?>
+                    <?= $block->getChildHtml($_total->getBlockName(), false) ?>
+                <?php else : ?>
+                    <?php if( ($_code == '0')  && ($discountValue>0)){?>
+                        <tr class="col-0">
+                            <td class="label">
+                                <strong>Reward Discount</strong>
+                            </td>
+                            <td>
+                                <strong><span class="price"><?php echo $order->formatPrice($discountValue);?></span></strong>
+                            </td>
+                        </tr>
+                    <?php }?>
+                    <tr class="col-<?= $block->escapeHtmlAttr($_code) ?>">
+                        <td <?= /* @noEscape */ $block->getLabelProperties() ?> class="label">
+                            <strong><?= $block->escapeHtml($_total->getLabel()) ?></strong>
+                        </td>
+                        <td <?= /* @noEscape */ $block->getValueProperties() ?>>
+                            <strong><?= /* @noEscape */ $block->formatValue($_total) ?></strong>
+                        </td>
+                    </tr>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </tfoot>
+    <?php endif; ?>
+
+    <?php $_totals = $block->getTotals('')?>
+    <?php if ($_totals) : ?>
+        <tbody>
+            <?php foreach ($_totals as $_code => $_total) : ?>
+                <?php if ($_total->getBlockName()) : ?>
+                    <?= $block->getChildHtml($_total->getBlockName(), false) ?>
+                <?php else : ?>
+                    <tr class="col-<?= $block->escapeHtmlAttr($_code) ?>">
+                        <td <?= /* @noEscape */ $block->getLabelProperties() ?> class="label">
+                            <?php if ($_total->getStrong()) : ?>
+                            <strong><?= $block->escapeHtml($_total->getLabel()) ?></strong>
+                            <?php else : ?>
+                            <?= $block->escapeHtml($_total->getLabel()) ?>
+                            <?php endif?>
+                        </td>
+
+                        <?php if ($_total->getStrong()) : ?>
+                            <td <?= /* @noEscape */ $block->getValueProperties() ?>>
+                                <strong><?= /* @noEscape */ $block->formatValue($_total) ?></strong>
+                            </td>
+                        <?php else : ?>
+                            <td <?= /* @noEscape */ $block->getValueProperties() ?>>
+                                <span><?= /* @noEscape */ $block->formatValue($_total) ?></span>
+                            </td>
+                        <?php endif; ?>
+                    </tr>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </tbody>
+    <?php endif; ?>
+</table>
