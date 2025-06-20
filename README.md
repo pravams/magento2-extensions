@@ -2,9 +2,10 @@
 Magento 2 custom extensions and themes that enhance magento 2 features:
 
 ## List of Extensions
-* [Recurring Order] (#1-recurring-order)
-* [Headless Theme] (#2-headless-theme)
-* [Reward] (#3-reward)
+
+* [Recurring Order](#1-recurring-order)
+* [Headless Theme](#2-headless-theme)
+* [Reward](#3-reward)
 
 ## 1.) Recurring Order
 
