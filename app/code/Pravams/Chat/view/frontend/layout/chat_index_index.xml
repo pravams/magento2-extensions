@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
+    <body>
+        <container name="root">
+            <block class="Pravams\Chat\Block\Html\Chat" name="chat-front" template="Pravams_Chat::index/index.phtml" cacheable="false"/>
+        </container>
+    </body>
+</page>

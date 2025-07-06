@@ -1,0 +1,212 @@
+
+<div class="chat-div" >
+    
+</div>
+
+<script type="text/javascript">    
+require(['jquery'], function($){ 
+    jQuery(document).ready(function(){
+
+        function hideOlderMessages(){
+          //check the chat scroll for older messages
+          var dataLimit = 750;
+          if(jQuery('.chat-exist').html().length > dataLimit){
+            var numberofChats = jQuery('.chat-box').length-1;
+            var shownChats = 0;
+            var hidden=0;
+            for(var i=numberofChats;i>=0; i--){
+              shownChats = shownChats + jQuery('.chat-box:eq('+i+')').html().length;
+              if(shownChats < dataLimit){
+                jQuery('.chat-box:eq('+i+')').css('display','block');
+              }else{
+                hidden=1;
+                jQuery('.chat-box:eq('+i+')').css('display','none');
+              }
+            }
+            if(hidden==1){
+              jQuery('.old-message').show();
+            }
+          }
+          jQuery('#old-message-button').show();
+        }        
+
+        jQuery.get("<?php echo $block->getUrl("chat/index/index");?>",function(data, success){
+          var ajaxResp = jQuery.parseHTML(data);
+          for(var i=0;i<jQuery.parseHTML(data).length;i++){
+            if(jQuery.parseHTML(data)[i].innerHTML != undefined){
+              if(jQuery.parseHTML(data)[i].innerHTML.indexOf('chat-link') > 0){
+                jQuery('.chat-div').html(jQuery.parseHTML(data)[i].innerHTML);
+                chatAllCode();
+                jQuery("#chat-close").click();
+              }
+            }
+          }                    
+        });
+
+        function chatAllCode(){
+          jQuery("#chat-close").click(function(){
+              jQuery('#chat-link').css('display','inline-block');
+              jQuery('#chat-close').css('display','none');
+              jQuery('.live-chat').css('display','none');
+              jQuery('#chat-refresh').css('display','none');
+          });
+          jQuery("#chat-link").click(function(){
+              jQuery('#chat-link').css('display','none');
+              jQuery('#chat-close').css('display','inline-block');
+              jQuery('#chat-refresh').css('display','inline-block');
+              jQuery('.live-chat').css('display','block');
+              jQuery('#chat-refresh').click();
+          });
+          
+          jQuery("#chat-exist").click(function(){
+            var message = jQuery('#message').val();
+            jQuery('#spam-error').css('display','none');
+            if(message.length>0){
+              jQuery('.new-chat').css('display','none');
+              jQuery('.live-chat').css('display','block');
+              var customerName = jQuery('#customername').val();
+              var customerEmail = jQuery('#email').val();
+              var customerMessage = jQuery('#message').val();
+              jQuery.post('<?php echo $block->getUrl("chat/index/save");?>',
+                {
+                customername: customerName,
+                email: customerEmail,
+                message: customerMessage
+                },
+                function(data,status){
+                    if(data == 'spam'){
+                      jQuery('#spam-error').css('display','block');
+                    }else{
+                      showChat(data);
+                    }
+                    
+                }
+              );
+              jQuery('#chat-error').css('display','none');
+              jQuery('#message').val("");
+            }else{
+            //alert('Please enter chat message');
+              jQuery('#chat-error').css('display','block');
+            } 
+          });
+
+          jQuery('#chat-refresh').click(function(){
+              jQuery('.new-chat').css('display','none');
+              jQuery('.live-chat').css('display','block');
+              jQuery('#spam-error').css('display','none');
+              var customerName = jQuery('#customername').val();
+              var customerEmail = jQuery('#email').val();
+              var customerMessage = jQuery('#message').val();
+              jQuery.post ('<?php echo $block->getUrl("chat/index/refresh");?>',
+              function(data,status){
+                  showChat(data);
+              });
+          });
+
+          jQuery('#old-message-button').click(function(){
+            var numberofChats = jQuery('.chat-box').length-1;
+            for(var i=numberofChats;i>=0; i--){
+              jQuery('.chat-box:eq('+i+')').css('display','block');
+            }
+            jQuery('#old-message-button').hide();
+          });
+        }
+
+        function showChat(data){
+          var allMessage=JSON.parse(data);
+          jQuery('.chat-exist').html('');
+          for (i = 0; i < allMessage.length; ++i) {
+            var eachMessage=allMessage[i].message;
+            var eachName=allMessage[i].customer_name;
+            var eachViewed=allMessage[i].viewed;
+            var eachType=allMessage[i].type;
+            var eachDate=allMessage[i].created_at;
+            var messageRead =  '';
+            if( (eachViewed == 0) && (eachType == 'customer')){
+              messageRead = '(Unread)';
+            }
+            var chatHtml = '<div class="chat-box"><div class="chat-customer-name">'+eachName+'<span class="message-read">'+messageRead+'</span></div><div class="chat-date">'+eachDate+'</div><div class="chat-message">'+eachMessage+'</div></div>';
+            jQuery('.chat-exist').append(chatHtml);
+          }
+          hideOlderMessages();
+        }
+
+    });
+  });
+
+</script>
+
+<style>
+.message-read{
+  color: gray;
+  font-weight: normal;
+}
+#chat-error, #spam-error{
+  width:84%;
+  float:left;
+  padding-top: 12px;
+  color: red;
+}
+#chat-exist{
+  background: #e3e3e3;
+  border-color: #adadad;
+  color: #514943;
+  width: 80px;
+  height: 31px;
+  font-size: 18px;
+}
+.old-message{
+  display:none;
+  text-align: center;
+  padding-bottom: 6px;
+}
+.chat-div {
+    width: 300px;
+    position: fixed;
+    bottom: 5%;
+    right: 2%;
+    background-color: white;
+    padding: 12px;
+    box-shadow: 2px 2px;
+    border: 1px solid;
+}
+.chatdiv1{
+  display:none;
+}
+.chatdiv2{
+  display:none;
+}
+.chatdiv3{
+  display:none;
+}
+.chat-box{
+  width:100%;float:left;
+}
+.chat-customer-name{
+  width:60%;float:left;font-weight: bold; color:#ffa500 ;
+}
+.chat-date{
+  width: 21%;float: right;font-size: 10px;padding-left: 5px;color:black ;
+}
+.chat-message{
+  width:100%;float:left;border-bottom: 1px solid black; color:#8000ff;
+}
+.chatlink{
+  height:100px;overflow-y:scroll;
+}
+.chat-exist-parent{
+    display: block;
+}
+#message{
+    margin-top:12px;
+}
+.live-chat{
+    max-height: 400px;
+    overflow-y: scroll;
+}
+.messsage{
+    height: 44px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+</style>

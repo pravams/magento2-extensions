@@ -1,0 +1,198 @@
+<?php $obj=\Magento\Framework\App\ObjectManager::getInstance();
+      $chatCount=$obj->get('Pravams\Chat\Model\ResourceModel\ChatMessage\CollectionFactory')->create();
+      $chatCountData=$block->getChatCollection();
+
+      foreach( $chatCountData as $_chatCountData){
+        $_chatCountData->setAdminViewed(1);        
+        $_chatCountData->save();
+      }
+?>
+<div id="page:main-container" class="page-columns">
+  <div id="container" class="main-col" style="min-height: 610px;">
+    <div class="admin__old" style="float: right;width: 70%;">
+        <div>
+        <?php 
+        $chatId=$this->getRequest()->getParams()["viewid"];
+        $chatMessagelistCollection=$block->getChatCollection();    
+        $currCustomer = $chatMessagelistCollection->getFirstItem();
+        ?>
+        <h3 style="padding-left:12px">Customer Name: <a target="_blank" href="<?php echo $block->getUrl('customer/index/edit', array('id'=>$currCustomer->getCustomerId()));?>"><?php echo $currCustomer->getCustomerName()?></a></h3>
+        <div class="chat-exist-parent" class="chatlink">
+          <form action="<?php echo $this->getUrl('pravams_chat/index/save');?>" method="POST" id="adminchatform">
+          <div class="old-message">
+            <button type="button" id="old-message-button">View All Messages</button>
+          </div>
+          <div class="chat-exist"> 
+            <?php 
+            foreach($chatMessagelistCollection as $_chatMessagelist){ 
+              $customerId=$_chatMessagelist->getCustomerId();
+              $customerName=$_chatMessagelist->getCustomerName();
+            ?>
+              <div class="chat-box">
+                <div class="chat-customer-name">
+                <?php
+                if ($_chatMessagelist->getMessageType()=="customer") {
+                  echo  $_chatMessagelist->getCustomerName();                  
+                } else {
+                  echo  $_chatMessagelist->getAdminName();
+                  if($_chatMessagelist->getCustomerViewed() == 0){
+                    echo "<span class=\"message-read\">(Unread)</span>";
+                  }
+                }
+                $chatTime = strtotime($_chatMessagelist->getCreatedAt());
+                $chatTimeFmt = date('d-M h:i',$chatTime);
+                ?>
+                </div>
+                <div class="chat-date"><?php echo $chatTimeFmt;?></div>
+                <div class="chat-message"><?php echo $_chatMessagelist->getMessage();?></div>
+              </div>
+            <?php } ?>
+          </div>          
+          <input type="hidden" id="chat_id" name="chat_id" value="<?php echo $chatId;?>">
+          <input type="hidden" id="customer_id" name="customer_id" value="<?php echo $customerId;?>">
+          <input type="hidden" id="customer_name" name="customer_name" value="<?php echo $customerName;?>">
+          <input type="hidden" id="form_key" name="form_key" value="<?php echo $block->getFormKey();?>">          
+          <div style="width:100%;">
+            <span style="width:50%;float:left">
+              <input type="text" id="message" name="message" value="" placeholder="Chat message here" style="width: 550px;"/>
+            </span>
+            <span id="chat-error" style="display:none;" type="blank">Please enter chat message</span>
+          </div>
+          <div style="padding-top: 10px;width: 100%;float: left;">            
+            <input type="button" id="chat-exist" name="chat-exist" value="Send" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <?php echo $block->getChildHtml();?>
+</div>
+
+<script type="text/javascript">
+  require(['jquery'], function($){ 
+    jQuery(document).ready(function(){
+      //check the chat scroll for older messages
+      var dataLimit = 2550;
+      if(jQuery('.chat-exist').html().length > dataLimit){
+        var numberofChats = jQuery('.chat-box').length-1;
+        var shownChats = 0;
+        var hidden=0;
+        for(var i=numberofChats;i>=0; i--){
+          shownChats = shownChats + jQuery('.chat-box:eq('+i+')').html().length;
+          if(shownChats < dataLimit){
+            jQuery('.chat-box:eq('+i+')').css('display','block');
+          }else{
+            hidden=1;
+            jQuery('.chat-box:eq('+i+')').css('display','none');
+          }
+        }
+        if(hidden==1){
+          jQuery('.old-message').show();
+        }
+      }
+
+      jQuery('#old-message-button').click(function(){
+        var numberofChats = jQuery('.chat-box').length-1;
+        for(var i=numberofChats;i>=0; i--){
+          jQuery('.chat-box:eq('+i+')').css('display','block');
+        }
+        jQuery('#old-message-button').hide();
+      });
+
+      jQuery('#chat-exist').click(function(){
+        var message = jQuery('#message').val();
+        if(message.length>0){
+          jQuery('#adminchatform').submit();
+        }else{
+          //alert('Please enter chat message');
+          jQuery('#chat-error').css('display','block') 
+        }
+      });
+
+      jQuery('#message').keypress(function(e){
+        if(e.which ==13){
+          e.preventDefault();
+          return false;
+        }
+      });      
+
+    });
+  });
+</script>
+
+
+<style>
+.message-read{
+  color: gray;
+  font-weight: normal;
+}
+#chat-error{
+  width:50%;
+  float:left;
+  padding-top: 12px;
+  color: red;
+}
+#chat-exist{
+  background: #e3e3e3;
+  border-color: #adadad;
+  color: #514943;
+  width: 80px;
+  height: 31px;
+  font-size: 18px;
+}
+.old-message{
+  display:none;
+  text-align: center;
+}
+.admin__page-nav-item._active .admin__page-nav-link, .admin__page-nav-item.ui-state-active .admin__page-nav-link {
+  padding-bottom: 28px;
+}
+.admin__page-nav-link{
+  padding-bottom: 28px;
+}
+
+.chat-div {
+    width: 170px;
+    position: fixed;
+    bottom: 5%;
+    right: 2%;
+    background-color: white;
+    padding: 12px;
+    box-shadow: 2px 2px;
+    border: 1px solid;
+}
+.chatdiv1{
+  display:none;
+}
+.chatdiv2{
+  display:none;
+}
+.chatdiv3{
+  display:none;
+}
+.chat-box{
+  width:100%;float:left;
+}
+.chat-customer-name{
+  width:90%;float:left;font-weight: bold; color:#ffa500 ;
+}
+.chat-date{
+  width: 10%;float: right;font-size: 10px;padding-left: 5px;color:black ;
+}
+.chat-message{
+  width:100%;float:left;border-bottom: 1px solid black; color:#8000ff;
+}
+.chatlink{
+  height:100px;overflow-y:scroll;
+}
+.chat-exist-parent{
+    display: block;
+    padding: 12px;
+    max-height: 580px;
+    overflow-y: scroll;
+}
+#message{
+    margin-top:12px;
+}
+</style>
+

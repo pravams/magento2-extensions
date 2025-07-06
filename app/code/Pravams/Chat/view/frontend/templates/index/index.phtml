@@ -1,0 +1,56 @@
+<?php
+$isLoggedId = $block->getLogin();
+?>
+<div class="chat-content">    
+    <button id="chat-close" name="chat-link-close" style="float:right;" <?php if(!$isLoggedId) echo "style='display:none;'";?>>Close</button>
+    <?php if ($isLoggedId) {
+        if($block->getChatData()->getBlockStatus() == 0){?>
+            <button id="chat-link" name="chat-link" class="chatdiv1">Chat</button>
+            <button id="chat-refresh" name="chat-refresh" class="chatdiv4">Refresh</button>
+            <div class="live-chat" class="chatdiv3">
+                <h2 style="margin-top: 0.5rem;margin-bottom: 1rem;">Chat with Support Team</h2>
+                <div class="old-message">
+                    <button type="button" id="old-message-button">View All Messages</button>
+                </div>
+                <div class="chat-exist-parent" class="chatlink">
+                    <form action="<?php echo $this->getUrl('chat/index/exist');?>" method="POST"id="customerchatform">
+                        <div class="chat-exist">
+                        <?php 
+                        $chatMessagelistCollection=$block->getChatmessageCollection();
+                        foreach($chatMessagelistCollection as $_chatMessagelist){ ?>
+                            <div class="chat-box">
+                                <div class="chat-customer-name">
+                                <?php
+                                if ($_chatMessagelist->getMessageType()=="customer") {
+                                echo  $_chatMessagelist->getCustomerName();
+                                } else {
+                                echo  $_chatMessagelist->getAdminName();
+                                }
+                                $chatTime = strtotime($_chatMessagelist->getCreatedAt());
+                                $chatTimeFmt = date('d-M h:i',$chatTime);
+
+                                ?>
+                                </div>
+                                <div class="chat-date"><?php echo $chatTimeFmt;?></div>
+                                <div class="chat-message"><?php echo $_chatMessagelist->getMessage();?></div>
+
+                            </div>
+                            <?php } ?>
+                        </div>
+                        <span id="chat-error" style="display:none" type="blank" >Please enter chat message</span>
+                        <span id="spam-error" style="display:none" type="blank" >Sorry, your message cannot be sent, as your previous 4 messages are still Unread!</span>
+                        <textarea id="message" name="message" class="messsage" placeholder="Chat message here"></textarea>
+                        <input type="button" id="chat-exist" name="chat-exist" value="Send" />
+                    </form>
+                </div>
+            </div>
+        <?php }else{ ?>
+            <h4 style="margin-top: 0.5rem;margin-bottom: 1rem;">Sorry your chat has been disabled by Admin.</h4>
+        <?php } ?>        
+    <?php }else{ ?>
+        <div id="myDIV" class="chatdiv2" <?php if(!$isLoggedId) echo "style='display:block;'";?>>
+          <p><a href="<?php echo $block->getUrl('customer/account')?>">Login to Chat</a></p>
+        </div>
+    <?php 
+    } ?>
+</div>

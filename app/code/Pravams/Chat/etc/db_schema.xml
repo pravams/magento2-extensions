@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<!-- 
+/**
+ * Pravams Chat Module
+ * 
+ * @category Pravams
+ * @package Pravams_Chat
+ * @copyright Copyright (c) 2023 Pravams. (http://www.pravams.com)
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="pravams_chat" resource="default" engine="innodb" comment="Chat">
+        <column xsi:type="smallint" name="chat_id" padding="7" unsigned="false" nullable="false" identity="true" comment="Chat Id" />
+        <column xsi:type="smallint" name="customer_id" padding="7" unsigned="false" nullable="true" comment="Customer Id" />
+        <column xsi:type="smallint" name="admin_id" padding="7" unsigned="false" nullable="true" comment="Admin Id" />
+        <column xsi:type="varchar" name="customer_name" nullable="false" length="20" comment="Customer Name" />
+        <column xsi:type="varchar" name="admin_name" nullable="false" length="20" comment="Admin Name"/>
+        <column xsi:type="varchar" name="block_status" nullable="false" default="0" comment="Block status" />
+        <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="false" comment="Created At" />
+        <column xsi:type="timestamp" name="last_message" nullable="false" default="CURRENT_TIMESTAMP" on_update="true" comment="Last Message Time" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+           <column name="chat_id" />
+        </constraint>
+    </table>
+    <table name="pravams_chat_message" resource="default" engine="innodb" comment="Chat Message">
+        <column xsi:type="smallint" name="id_message" padding="7" unsigned="false" nullable="false" identity="true" comment="Id Message" />
+        <column xsi:type="smallint" name="chat_id" padding="7" unsigned="false" nullable="false" comment="Chat Id" />
+        <column xsi:type="smallint" name="customer_id" padding="7" unsigned="false" nullable="true" comment="Customer Id" />
+        <column xsi:type="smallint" name="admin_id" padding="7" unsigned="false" nullable="true" comment="Admin Id" />
+        <column xsi:type="varchar" name="message" nullable="false" length="500" comment="Message" />
+        <column xsi:type="varchar" name="customer_name" nullable="false" length="20" comment="Customer Name"/>
+        <column xsi:type="varchar" name="admin_name" nullable="false" length="20" comment="Admin Name"/>
+        <column xsi:type="varchar" name="message_type" nullable="false" length="20" comment="Message type"/>
+        <column xsi:type="varchar" name="customer_viewed" nullable="false" default="0" comment="Customer Viewed" />
+        <column xsi:type="varchar" name="admin_viewed" nullable="false" default="0" comment="Admin Viewed" />
+        <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="false" comment="Created At" />
+        <column xsi:type="timestamp" name="last_message" nullable="false" default="CURRENT_TIMESTAMP" on_update="true" comment="Last Message Time" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+           <column name="id_message" />
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="PRAVAMS_CHAT_ID_PRAVAMS_CHAT_MESSAGE_ID" table="pravams_chat_message" column="chat_id" referenceTable="pravams_chat" referenceColumn="chat_id" onDelete="CASCADE" ></constraint>
+        <index referenceId="PRAVAMS_CHAT_MESSAGE_ID" indexType="btree">
+           <column name="chat_id" />
+        </index>
+    </table>    
+</schema>

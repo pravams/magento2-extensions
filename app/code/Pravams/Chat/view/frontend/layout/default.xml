@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:view/Layout/etc/page_configuration.xsd"> 
+    <body>
+        <referenceContainer name="footer-container">
+            <block class="Pravams\Chat\Block\Html\Footer" name="chat_link" template="Pravams_Chat::index/chat.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

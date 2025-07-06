@@ -1,0 +1,116 @@
+<?php $chatlist=$block->getChatData();?>
+<div id="page:left" class="side-col" style="float: left;width: 30%;">
+    <div class="ui-tabs">
+        <div class="admin__page-nav">
+            <div class="admin__page-nav-title" style="width:100%;border-bottom: 2px solid black;height: 68px;">
+                <strong tabindex="1" style="width:75%;float:left;font-size: 18px;">Customer Chat Messages</strong>
+                <span style="width:25%;float:left;">
+                    <button type="button" onclick="refreshChat()" >Refresh Chat</button>
+                </span>
+            </div>
+            <ul class="admin__page-nav-items items">
+                <li  class="admin__page-nav-item" tabindex="2">
+                    <div style="padding-bottom: 38px;font-size: 16px;font-weight: bold;">
+                        <span style="float:left;width:40%;">Customer Name</span>
+                        <span style="float:left;width:30%;">Date</span>
+                        <span style="float:left;width:10%;" title="Number of new message(s) which are unread">New</span>
+                        <span style="float:left;width:20%;text-align: center;">Action</span>
+                    </div>
+                </li>
+            <?php
+            foreach($chatlist as $_chatlist){
+                $chatParams=$this->getRequest()->getParams();
+                $active=false;
+                if (array_key_exists("viewid",$chatParams))
+                 {
+                    $chatId=$this->getRequest()->getParams()["viewid"];
+                    if($chatId ==$_chatlist->getId()){
+                       $active=true;
+                    }
+                 }
+                $chatTimeFmt = date('d-M h:i',strtotime($_chatlist->getLastMessage()));
+                
+                $chatCount=$block->getChatMessageData();
+                $chatCount->addFieldToFilter('customer_id',$_chatlist->getCustomerId());                
+                $chatCount->addFieldToFilter('admin_viewed',0);
+
+                $messageCount=count($chatCount->getItems());
+                if($_chatlist->getBlockStatus() == 1){
+                    $blockStatus=0;
+                    $imgSrc = $block->getViewFileUrl('Pravams_Chat::images/un-blocked.png');
+                    $blockTitle = "Un-Block Customer";
+                }else{
+                    $blockStatus=1;
+                    $imgSrc = $block->getViewFileUrl('Pravams_Chat::images/blocked.png');
+                    $blockTitle = "Block Customer";
+                }                
+                ?>
+                <li  class="admin__page-nav-item <?php if($active) echo "_active"; ?>" tabindex="2">
+                    <a class="admin__page-nav-link" href="<?php echo $block->getUrl('pravams_chat/index/view',array('viewid'=>$_chatlist->getId()))?>">
+                        <span title="Customer name" style="float:left;width:40%;"><?php echo $_chatlist->getCustomerName();?></span>
+                        <span title="Last chat message time" style="float:left;width:30%;"><?php echo $chatTimeFmt;?></span>
+                        <span style="float:left;width:10%;" title="Number of new message(s) which are unread"><?php echo ($messageCount ==0) ? "-":$messageCount;?></span>
+                    </a>
+                    <span style="position: absolute;right: 20px;top: 8px;" >
+                        <img title="<?php echo $blockTitle;?>"style="width: 25px;height: 25px;margin-top: 6px;cursor: pointer;margin-right: 10px;" class="blockbutton" block-chat-url="<?php echo $this->getUrl('pravams_chat/index/black',array('blockid'=>$_chatlist->getId(),'status'=>$blockStatus)) ?>" src="<?php echo $imgSrc;?>" name="delete-chat"/>
+                        <img title="Delete chat"style="width: 25px;height: 25px;margin-top: 6px;cursor: pointer;" class="deletebutton" delete-chat-url="<?php echo $this->getUrl('pravams_chat/index/delete',array('deleteid'=>$_chatlist->getId())) ?>" src="<?php echo $block->getViewFileUrl('Pravams_Chat::images/delete.png');?>" name="delete-chat"/>
+                        <!--<button id="deletebutton" class="deletebutton" delete-chat-url="<?php //echo $this->getUrl('pravams_chat/index/delete',array('deleteid'=>$_chatlist->getId())) ?>"><span>Delete</span></button>-->
+                    </span>
+                </li>
+                <?php }?>
+            </ul>
+        </div>
+    </div>
+</div>
+<div id="popup-modal" style="display: none"></div>
+<script>
+    function refreshChat(){
+        var currentUrl = window.location.href;
+        window.location.replace(currentUrl);
+    }
+    require(
+        [
+            'jquery',
+            'Magento_Ui/js/modal/modal'
+        ],
+        function (
+            $,
+            modal
+        ) {
+            var options = {
+                type: 'popup',
+                responsive: true,
+                innerScroll: true,
+                title: 'Are you sure you want to delete this Customer Chat permanently ?',
+                modalClass: 'custom-modal',
+                buttons: [{
+                    text: $.mage.__('No'),
+                    class: '',
+                    click: function () {
+                        this.closeModal();
+                     }
+                },
+                {
+                    text: $.mage.__('Yes'),
+                    class: '',
+                    click: function () {               
+                        var deleteUrl =  this.focussedElement.querySelector('.deletebutton').getAttribute('delete-chat-url');
+                        window.location.replace(deleteUrl);
+                        this.closeModal();
+                     }
+                }
+            ]
+            };
+
+            var popup = modal(options, $('#popup-modal'));
+            $(".deletebutton").click(function() {
+                $("#popup-modal").modal('openModal');
+            });
+
+            // block customer chat
+            jQuery('.blockbutton').click(function(){
+                var blockUrl = jQuery(this).attr('block-chat-url');
+                window.location.replace(blockUrl);
+            });
+        });
+</script>

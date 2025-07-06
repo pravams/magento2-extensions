@@ -6,6 +6,7 @@ Magento 2 custom extensions and themes that enhance magento 2 features:
 * [Recurring Order](#1-recurring-order)
 * [Headless Theme](#2-headless-theme)
 * [Reward](#3-reward)
+* [Chat](#4-chat)
 
 ## 1.) Recurring Order
 
@@ -78,3 +79,25 @@ This Reward extension for Magento provides a way for the customer to earn Reward
     * Please note that there is a restriction/limit of 24 hours in earning reward points from (Product review and Wishlist activities) successively for the customer
 
 **Download Link:-** <https://github.com/pravams/magento2-extensions/tree/main/app/code/Pravams/Reward>
+
+## 4.) Chat
+
+This Chat extension for Magento provides a way for the customers to chat with the website support or Magento admin users. This provides a quick and easy way for the customers to ask questions or clear doubts, thereby increasing customer satisfaction. This also increases the customers engagement with the site thereby increasing traffic and sales as well. This exension is using minimum javascript, so the site performance is not affected by this extension.
+
+* Frontend:-
+
+    * Customer can chat with the website support team
+    * Customer has to log in to start chatting.
+    * The customer can refresh the page to see new messages
+    * Cusomer can also see, if thier messages are read by the Support team
+    * SPAM block to avoid excessive messaging
+
+* Admin Backend:-
+
+    * They can chat with mutiple customers from the same place
+    * They can also delete the chat
+    * Admin can also see, if thier messages are read by the Customer
+    * SPAM block to avoid excessive messaging
+    * Admin can blacklist a customer and disable his chat
+
+**Download Link:-** <https://github.com/pravams/magento2-extensions/tree/main/app/code/Pravams/Chat>
