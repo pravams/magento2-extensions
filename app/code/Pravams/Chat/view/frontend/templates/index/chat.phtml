@@ -61,6 +61,7 @@ require(['jquery'], function($){
           jQuery("#chat-exist").click(function(){
             var message = jQuery('#message').val();
             jQuery('#spam-error').css('display','none');
+            jQuery('#max-error').css('display','none');
             if(message.length>0){
               jQuery('.new-chat').css('display','none');
               jQuery('.live-chat').css('display','block');
@@ -76,6 +77,8 @@ require(['jquery'], function($){
                 function(data,status){
                     if(data == 'spam'){
                       jQuery('#spam-error').css('display','block');
+                    }else if(data == 'maxerror') {
+                      jQuery('#max-error').css('display','block');
                     }else{
                       showChat(data);
                     }
@@ -94,6 +97,7 @@ require(['jquery'], function($){
               jQuery('.new-chat').css('display','none');
               jQuery('.live-chat').css('display','block');
               jQuery('#spam-error').css('display','none');
+              jQuery('#max-error').css('display','none');
               var customerName = jQuery('#customername').val();
               var customerEmail = jQuery('#email').val();
               var customerMessage = jQuery('#message').val();
@@ -141,7 +145,7 @@ require(['jquery'], function($){
   color: gray;
   font-weight: normal;
 }
-#chat-error, #spam-error{
+#chat-error, #spam-error, #max-error{
   width:84%;
   float:left;
   padding-top: 12px;

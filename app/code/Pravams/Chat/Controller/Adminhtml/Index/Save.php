@@ -72,6 +72,13 @@ class Save extends \Magento\Backend\App\Action
         $customerId=$data["customer_id"];
         $customerName=$data["customer_name"];
 
+        //check for long message
+        if(strlen($data['message']) > 1000){
+            $this->messageManager->addNotice( __('Sorry, your message cannot be sent as it is too long!') );
+            $this->_redirect('pravams_chat/index/view/', array('viewid' => $chatId));
+            return;
+        }
+
         // check if the message is not a SPAM
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $chatMessageRead = $objectManager->get('\Pravams\Chat\Model\ResourceModel\ChatMessage\CollectionFactory')->create();

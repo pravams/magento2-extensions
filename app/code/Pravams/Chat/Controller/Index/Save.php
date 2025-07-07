@@ -74,7 +74,15 @@ class Save extends \Magento\Framework\App\Action\Action
                 $chatMessageRead = $objectManager->get('\Pravams\Chat\Model\ResourceModel\ChatMessage\CollectionFactory')->create();
                 $chatMessageRead->addFieldToFilter('customer_id',$customerId);
                 $chatMessageRead->addFieldToFilter('admin_viewed',0);
-                //var_dump(count($chatMessageRead));exit;
+
+                // check for long message
+                if(strlen($data['message']) > 1000){
+                    $output="maxerror";
+                    $rawResult = $this->resultFactory->create(ResultFactory::TYPE_RAW);
+                    return $rawResult->setContents($output);
+                }
+                
+                // check for spam
                 if(count($chatMessageRead)>3){
                     $output="spam";
                     $rawResult = $this->resultFactory->create(ResultFactory::TYPE_RAW);
