@@ -30,7 +30,7 @@
         <column xsi:type="smallint" name="admin_id" padding="7" unsigned="false" nullable="true" comment="Admin Id" />
         <column xsi:type="varchar" name="message" nullable="false" length="500" comment="Message" />
         <column xsi:type="varchar" name="customer_name" nullable="false" length="20" comment="Customer Name"/>
-        <column xsi:type="varchar" name="admin_name" nullable="false" length="20" comment="Admin Name"/>
+        <column xsi:type="varchar" name="admin_name" nullable="true" length="20" comment="Admin Name"/>
         <column xsi:type="varchar" name="message_type" nullable="false" length="20" comment="Message type"/>
         <column xsi:type="varchar" name="customer_viewed" nullable="false" default="0" comment="Customer Viewed" />
         <column xsi:type="varchar" name="admin_viewed" nullable="false" default="0" comment="Admin Viewed" />

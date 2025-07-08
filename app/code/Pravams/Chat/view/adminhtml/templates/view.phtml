@@ -1,9 +1,15 @@
-<?php $obj=\Magento\Framework\App\ObjectManager::getInstance();
-      $chatCount=$obj->get('Pravams\Chat\Model\ResourceModel\ChatMessage\CollectionFactory')->create();
-      $chatCountData=$block->getChatCollection();
+<?php 
+      $chatId=$this->getRequest()->getParams()["viewid"];
 
+      $obj=\Magento\Framework\App\ObjectManager::getInstance();
+      $chatCount=$obj->get('Pravams\Chat\Model\ResourceModel\ChatMessage\CollectionFactory')->create();
+      $chatCountData=$chatCount->addFieldToFilter('admin_viewed',0)->addFieldToFilter('chat_id',$chatId);
+      $adminId = $block->getAdminId();
+      $adminName = $block->getAdminName();
       foreach( $chatCountData as $_chatCountData){
-        $_chatCountData->setAdminViewed(1);        
+        $_chatCountData->setAdminViewed(1);
+        $_chatCountData->setAdminId($adminId);
+        $_chatCountData->setAdminName($adminName);
         $_chatCountData->save();
       }
 ?>
@@ -11,8 +17,7 @@
   <div id="container" class="main-col" style="min-height: 610px;">
     <div class="admin__old" style="float: right;width: 70%;">
         <div>
-        <?php 
-        $chatId=$this->getRequest()->getParams()["viewid"];
+        <?php         
         $chatMessagelistCollection=$block->getChatCollection();    
         $currCustomer = $chatMessagelistCollection->getFirstItem();
         ?>

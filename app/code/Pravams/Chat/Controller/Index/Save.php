@@ -57,9 +57,9 @@ class Save extends \Magento\Framework\App\Action\Action
             $chatlistCollection=$this->_chatlistCollection;
             
             $customerName=$session->getCustomerData()->getFirstName()." ".$session->getCustomerData()->getLastName();
-            // this value is hard coded but not of any use for the customer
-            $adminId=1;
-            $adminName="admin";
+            // this value is set null first but changed later
+            $adminId=null;
+            $adminName=null;
         
             $data = $this->getRequest()->getPostValue();
             
