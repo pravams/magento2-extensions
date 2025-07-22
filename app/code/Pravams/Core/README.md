@@ -3,7 +3,7 @@ Magento 2 custom extensions that enhance magento 2 features:
 
 ## Core
 
-This module has to code which is common some of the modules. Below are the list of modules for which this module is madatory for installation and the extensions to work completely.
+This module has the code which is common to some of the modules. Below are the list of modules for which this module is madatory for installation and the extensions to work completely.
 
 * Modules are:-
 
