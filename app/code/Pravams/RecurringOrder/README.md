@@ -12,6 +12,7 @@ This Recurring Order extension for Magento makes it easier for customers to crea
     * The subscription can be created for any shipping method
     * The subscription is currently supported for simple products only
     * The subscription can be created for offline payment methods only
+    * This module is designed for the Magento Luma theme
  
 * Admin Backend:-
 

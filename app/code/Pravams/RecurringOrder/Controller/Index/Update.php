@@ -18,9 +18,20 @@ use Pravams\RecurringOrder\Model\Cart as CustomerCart;
 
 class Update extends \Magento\Framework\App\Action\Action
 {
-    
+    /**
+     * @var Session $subscriptionSession
+    */
     protected $subscriptionSession;
+
+    /**
+     * @var CustomerCart $cart
+    */
+    protected $cart;
     
+    /**
+     * @param Session $subscriptionSession
+     * @param CustomerCart $cart
+    */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         Session $subscriptionSession,

@@ -12,6 +12,7 @@ This Chat extension for Magento provides a way for the customers to chat with th
     * The customer can refresh the page to see new messages
     * Cusomer can also see, if thier messages are read by the Support team
     * SPAM block to avoid excessive messaging
+    * This module is designed for the Magento Luma theme
 
 * Admin Backend:-
 

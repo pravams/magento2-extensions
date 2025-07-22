@@ -12,6 +12,7 @@ This Reward extension for Magento provides a way for the customer to earn Reward
     * The customer can redeem the points by entering the number of points on the shopping cart page
     * The cart value is discounted in proportion to the number of points redeemed during checkout    
     * The customer can also see the number of reward points redeemed as well.
+    * This module is designed for the Magento Luma theme
  
 * Admin Backend:-
 

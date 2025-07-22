@@ -64,6 +64,7 @@ define([
          * @returns {jQueryPromise}
          */
         loadTemplate: function (path) {
+           
             var content = this.loadFromNode(path),
                 defer;
 
@@ -88,7 +89,8 @@ define([
          */
         loadFromFile: function (path) {
             var loading = $.Deferred();
-
+            var customPath = path;
+            
             path = this.formatPath(path);
 
             require([path], function (template) {
@@ -97,7 +99,7 @@ define([
             }, function (err) {
                 loading.reject(err);
             });
-
+            
             return loading.promise();
         },
 
@@ -150,7 +152,23 @@ define([
 });
 
 function loadCusotmNavJs(path){
-    if(path = 'Magento_Weee/checkout/summary/item/price/row_excl_tax'){
+    if(path == 'ui/content/content'){
+        if(jQuery('#tab_block_customer_edit_tab_subscription').length > 0 ){
+           if(jQuery('#tab_block_customer_edit_tab_subscription').parent('li').html().length > 0){
+                jQuery('.admin__page-nav-item').click(function(){
+                    jQuery('#RecurringOrder_content').css('display','none');
+                });
+
+                jQuery('#tab_block_customer_edit_tab_subscription').parent('li').click(function(){
+                    jQuery('#tab_block_customer_edit_tab_subscription .admin__page-nav-item-message-loader').css('display','inline-block');
+                    var loaderHtml = "<img src="+jQuery('#subscription_loader').val()+" name=\"subscription_load_image\"/>";
+                    jQuery('#RecurringOrder_content').html(loaderHtml);
+                    jQuery('#RecurringOrder_content').css('display','block');
+                    loadSubscriptionGrid();
+                });
+            }
+        }
+    }else if(path = 'Magento_Weee/checkout/summary/item/price/row_excl_tax'){
         if(jQuery('.totals.reward').length==0){
             if(window.checkoutConfig != undefined){
                 if(window.checkoutConfig.ps_reward_points != undefined){
@@ -160,4 +178,75 @@ function loadCusotmNavJs(path){
             }
         }
     }
+}
+
+function loadSubscriptionGrid(){
+    jQuery.ajax({
+        type: "GET",
+        url: jQuery('#subscription_content').val(),
+        dataType: "html",
+        success: function (responseData) {
+            jQuery('#tab_block_customer_edit_tab_subscription .admin__page-nav-item-message-loader').css('display','none');
+            //jQuery('#RecurringOrder_content').html(responseData);
+            //jQuery('#RecurringOrder_content').css('display','block');
+            document.getElementById('RecurringOrder_content').innerHTML = responseData;
+            /* code to display the subscription */
+            viewSubscription();
+        }
+    });
+}
+
+function viewSubscription(){
+    jQuery('.view_subscription').click(function(){
+        var id = jQuery(this).attr('id');
+        var url = jQuery(this).attr('url');
+        var loaderHtml = "<img src="+jQuery('#subscription_loader').val()+" name=\"subscription_load_image\"/>";
+        jQuery('#RecurringOrder_content').html(loaderHtml);
+        jQuery('#RecurringOrder_content').css('display','block');
+        jQuery.ajax({
+               type: "GET",
+               url: url,
+               dataType: "html",
+               success: function (responseData) {
+                   jQuery('#tab_block_customer_edit_tab_subscription .admin__page-nav-item-message-loader').css('display','none');
+
+                   jQuery('#RecurringOrder_content').html(responseData);
+                   jQuery('#RecurringOrder_content').css('display','block');
+                   changeStatus();
+               }
+            });
+     });
+}
+
+function changeStatus(){
+    jQuery('#subscription_status a').click(function(){
+        jQuery('#subscription_status').css('display','none');
+        jQuery('#subscription_status_content').css('display','block'); 
+    });
+    
+    jQuery('#subscription_status_action .cancel').click(function(){
+        jQuery('#subscription_status').css('display','block');
+        jQuery('#subscription_status_content').css('display','none');
+    });
+    
+    jQuery('#subscription_status_action .save').click(function(){
+        jQuery('#subscription_status').css('display','block');
+        jQuery('#subscription_status_content').css('display','none');
+        var loaderHtml = "<img src="+jQuery('#subscription_loader').val()+" name=\"subscription_load_image\"/>";
+        jQuery('#RecurringOrder_content').css('display','block');
+        // submit the form
+        var url = jQuery('#subscription_status_url').val();
+        var suId = jQuery('#subscription_id').val();
+        var suStatus = jQuery('#subscription_status_content select').val();
+        url = url+'subscription_id/'+suId+"/subscription_status_content/"+suStatus;
+        jQuery('#RecurringOrder_content').html(loaderHtml);
+        jQuery.ajax({
+            type: "GET",
+            url: url,
+            dataType: "html",
+            success: function () {
+                loadSubscriptionGrid();
+            }
+        });
+    });
 }
