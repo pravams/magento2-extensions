@@ -10,5 +10,9 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="Pravams_Chat" setup_version="1.0.0"></module>
+    <module name="Pravams_Chat" setup_version="1.0.0">
+        <sequence>
+            <module name="Pravams_Core"/>
+        </sequence>
+    </module>
 </config>

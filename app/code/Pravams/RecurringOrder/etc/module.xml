@@ -2,7 +2,8 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/Module/etc/module.xsd">
     <module name="Pravams_RecurringOrder" setup_version="0.0.0"> 
         <sequence>
-            <module name="Magento_Customer"/>
+            <module name="Magento_Customer"/>            
+            <module name="Pravams_Core"/>
         </sequence>
     </module>
 </config>
