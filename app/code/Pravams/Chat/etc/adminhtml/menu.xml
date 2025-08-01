@@ -11,6 +11,6 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xml">  
     <menu>
-        <add id="Pravams_Chat::second_level_link" title="All chat messages" module="Pravams_Chat" sortOrder="1" action="pravams_chat/index/index" parent="Pravams_Core::first_level_link" resource="Magento_Backend::content" />
+        <add id="Pravams_Chat::second_level_link" title="All Chat Messages" module="Pravams_Chat" sortOrder="1" action="pravams_chat/index/index" parent="Pravams_Core::first_level_link" resource="Magento_Backend::content" />
     </menu>
 </config>
