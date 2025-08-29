@@ -109,9 +109,7 @@ This Giftcard extension allows the customers to gift their loved ones a method t
 
 For example, John may want to gift his Dad an electronic item for Christmas. But instead of buying the product, he buys a gift card worth $100 online. His Dad receives the Email with the Gift card Code. Then he can go to the merchant store and buy his favorite electronic product whether iPhone or iPad from the Merchant website by using the gift card code.
 
-Increase in Sales: This would increase the sales of the merchant's store, as the number of orders will increase due to the use of Gift cards as another way of placing orders.
-User-Friendly Site: From the customer perspective it is easier to place orders by applying gift cards to orders and get discounts.
-An Emotion of Giving: Customers get a chance to thank people in their lives by giving them a gift. And also feel satisfied with their token of appreciation.
+This would increase the sales of the merchant's store, as the number of orders will increase due to the use of Gift cards as another way of placing orders. From the customer perspective it is easier to place orders by applying gift cards to orders and get discounts. Customers get a chance to thank people in their lives by giving them a gift. And also feel satisfied with their token of appreciation.
 
 
 * Frontend:-
