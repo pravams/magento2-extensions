@@ -30,7 +30,7 @@ An Emotion of Giving: Customers get a chance to thank people in their lives by g
 
 ## Steps to Install
 
-* Copy app/code/Pravams/RecurringOrder into your magento installation app/code folder
+* Copy app/code/Pravams/Giftcard into your magento installation app/code folder
 * run the below commands one by one:
 ```bash
 php bin/magento setup:upgrade
