@@ -103,7 +103,7 @@ This Chat extension for Magento provides a way for the customers to chat with th
 
 **Download Link:-** <https://github.com/pravams/magento2-extensions/tree/main/app/code/Pravams/Chat>
 
-## 5.) Gift Card
+## 5.) Giftcard
 
 This Giftcard extension allows the customers to gift their loved ones a method to purchase products on a merchant's website.
 
