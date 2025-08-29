@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration Schema/etc/schema.xsd">
+
+	<!--Giftcard Table -->
+
+	<table name="giftcard" resource="default" engine="innodb" comment="Giftcard Table">
+		<column xsi:type="int" name="entity_id" identity="true" unsigned="true" nullable="false" comment="Entity Id" />
+		<column xsi:type="smallint" name="store_id" unsigned="true" nullable="false" default="0" comment="Store Id" />
+		<column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="false" comment="Created At" />
+		<column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="true" comment="Updated At" />
+		<column xsi:type="varchar" name="is_active" length="255" nullable="true" comment="Is Active" />
+		<column xsi:type="varchar" name="is_used" length="255" nullable="true" comment="Is Used" />
+		<column xsi:type="int" name="giftcard_number" unsigned="true" default="0" nullable="true" comment="Giftcard Number" />
+		<column xsi:type="decimal" name="total_price" scale="4" precision="12" default="0" comment="Giftcard Total Price" />
+		<column xsi:type="decimal" name="price" scale="4" precision="12" default="0" comment="Giftcard Remaining Price" />
+		<column xsi:type="int" name="customer_id" unsigned="true" default="0" nullable="true" comment="Customer Id" />
+		<column xsi:type="int" name="quote_id" unsigned="true" default="0" comment="Quote Id" nullable="true" />
+		<column xsi:type="int" name="quote_item_id" unsigned="true" default="0" nullable="true" comment="Quote Item Id" />
+		<column xsi:type="int" name="order_id" nullable="true" unsigned="true" default="0" comment="Order Id" />
+		<column xsi:type="varchar" name="receiver_email" length="255" nullable="true" comment="Receiver Email" />
+		<column xsi:type="varchar" name="receiver_name" length="255" nullable="true" comment="Receiver Name" />
+		<column xsi:type="text" name="receiver_message" nullable="true" comment="Receiver Message" />
+		<index referenceId="GIFTCARD_CUSTOMER_ID_STORE_ID_IS_ACTIVE" indexType="btree">
+			<column name="customer_id" />
+			<column name="store_id" />
+			<column name="is_active" />
+		</index>
+		<index referenceId="GIFTCARD_STORE_ID" indexType="btree">
+			<column name="store_id" />
+		</index>
+		<constraint xsi:type="foreign" referenceId="GIFTCARD_STORE_ID_STORE_STORE_ID" table="giftcard" column="store_id" referenceTable="store" referenceColumn="store_id" onDelete="CASCADE"></constraint>
+		<constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id" />
+        </constraint>
+	</table>
+
+	<!-- Giftcard Quote-->
+
+	<table name="giftcard_quote" resource="default" engine="innodb" comment="Giftcard Quote">
+		<column xsi:type="int" name="entity_id" identity="true" unsigned="true" nullable="false" comment="Entity Id" />
+		<column xsi:type="int" name="giftcard_id" unsigned="true" default="0" nullable="true" comment="Giftcard Id" />
+		<column xsi:type="int" name="quote_id" nullable="true" unsigned="true" default="0" comment="Quote Id"/>
+		<column xsi:type="int" name="order_id" unsigned="true" default="0" nullable="true" comment="Order Id" />
+		<column xsi:type="decimal" name="price" scale="4" precision="12" default="0" comment="Giftcard Applied Price" />
+		<column xsi:type="varchar" name="status" length="255" nullable="true" comment="Status" />
+		<column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="false" comment="Created At" />
+		<constraint xsi:type="primary" referenceId="PRIMARY">
+			<column name="entity_id" />
+		</constraint>
+	</table>
+
+</schema>

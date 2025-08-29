@@ -177,6 +177,31 @@ function loadCusotmNavJs(path){
                 }
             }
         }
+    }else if (path == 'Magento_Tax/checkout/shipping_method/price'){
+        jQuery('#shipping-method-buttons-container button').click(function(){
+            if(jQuery('#giftcard-value-only').val() > 0){
+                var selShipMethod = jQuery(".table-checkout-shipping-method .radio:checked").val();
+                var selectorVal = "input[value='"+selShipMethod+"']";
+                var price = jQuery(selectorVal).parent().next().find('span .price').text();
+                var currency = jQuery('#giftcard-store-currency').val();
+                var shipPrice = price.replace(currency, "");
+                shipPrice = parseFloat(shipPrice).toFixed(2);
+
+                var currentShipPrice = jQuery('#giftcard-shipping-price').val();
+                currentShipPrice = parseFloat(currentShipPrice).toFixed(2);
+
+                var gcDiscountPrice = jQuery('#giftcard-value-only').val();
+                gcDiscountPrice = parseFloat(gcDiscountPrice).toFixed(2);
+                gcDiscountPrice = (parseFloat(gcDiscountPrice) - parseFloat(currentShipPrice) + parseFloat(shipPrice)).toFixed(2);
+                gcDiscountPrice = parseFloat(gcDiscountPrice).toFixed(2);
+                var gcDiscountPriceMax = jQuery('#giftcard-value-max').val();
+                if(gcDiscountPrice > gcDiscountPriceMax){
+                    gcDiscountPrice = gcDiscountPriceMax;
+                }
+                jQuery('#giftcard-value-only').val(gcDiscountPrice);
+                jQuery('#giftcard-shipping-price').val(shipPrice);
+            }
+        });
     }
 }
 

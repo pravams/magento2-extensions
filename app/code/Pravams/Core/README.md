@@ -10,6 +10,7 @@ This module has to code which is common some of the modules. Below are the list 
     * Pravams_RecurringOrder
     * Pravams_Reward   
     * Pravams_Chat
+    * Pravams_Giftcard
 
 ## Steps to Install
 
