@@ -41,7 +41,7 @@ class RewardDiscount extends \Magento\Quote\Model\Quote\Address\Total\AbstractTo
 
         $discount = $this->_priceCurrency->convert($baseDiscount);
         $total->addTotalAmount('psrewarddiscount', -$discount);
-        $total->addBaseTotalAmount('psrewarddiscount', -$baseDiscount);
+        //$total->addBaseTotalAmount('psrewarddiscount', -$baseDiscount);
         $total->setBaseGrandTotal($total->getBaseGrandTotal() - $baseDiscount);
         $quote->setPsRewardDiscount(-$discount);
         return $this;

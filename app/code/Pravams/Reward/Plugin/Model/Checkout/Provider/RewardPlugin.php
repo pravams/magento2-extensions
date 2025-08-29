@@ -31,7 +31,7 @@ class RewardPlugin{
         $currency = $this->currency;
         $rewardDiscount = $checkoutSession->getPsPointsDiscount();
         if($rewardDiscount > 0){
-            $output['ps_reward_points'] = $currency->getCurrencySymbol().$rewardDiscount;
+            $output['ps_reward_points'] = "-".$currency->getCurrencySymbol().$rewardDiscount;
         }
         return $output;
     }

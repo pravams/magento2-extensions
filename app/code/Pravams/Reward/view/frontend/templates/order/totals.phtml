@@ -30,7 +30,7 @@ if(count($pointsTransactionData)>0){
         if( ($_code == 'grand_total')  && ($discountValue>0)){?>
             <tr class="reward">
                 <th <?= /* @noEscape */ $block->getLabelProperties() ?> scope="row">Reward Discount</th>
-                <td class="amount" data-th="Reward Discount"><span class="price"><?php echo $order->formatPrice($discountValue);?></span></td>
+                <td class="amount" data-th="Reward Discount"><span class="price">-<?php echo $order->formatPrice($discountValue);?></span></td>
             </tr>
         <?php } ?>        
         <tr class="<?= $block->escapeHtmlAttr($_code) ?>">        

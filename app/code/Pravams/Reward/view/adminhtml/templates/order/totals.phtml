@@ -34,7 +34,7 @@ if(count($pointsTransactionData)>0){
                                 <strong>Reward Discount</strong>
                             </td>
                             <td>
-                                <strong><span class="price"><?php echo $order->formatPrice($discountValue);?></span></strong>
+                                <strong><span class="price">-<?php echo $order->formatPrice($discountValue);?></span></strong>
                             </td>
                         </tr>
                     <?php }?>
