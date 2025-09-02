@@ -1,13 +1,15 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: prashantmishra
- * Date: 10/21/18
- * Time: 4:46 PM
- */
-namespace Pravams\Giftcard\Model;
+ * Pravams Core Module
+ * 
+ * @category Pravams
+ * @package Pravams_Core
+ * @copyright Copyright (c) 2025 Pravams (http://www.pravams.com)
+ * @license http://opensource.org/licenses/osl-3.0php Open Software Licnese (OSL 3.0)
+*/
+namespace Pravams\Core\Model;
 
-class GiftcardEmail extends \Magento\Framework\DataObject{
+class Email extends \Magento\Framework\DataObject{
     /*
      * @var \Magento\Framework\Translate\Inline\StateInterface
      * */
@@ -51,8 +53,8 @@ class GiftcardEmail extends \Magento\Framework\DataObject{
         return $this;
     }
 
-    public function sendEmail($emailVariables, $senderInfo, $receiver, $area, $storeId){
-        $this->temp_id = "send_giftcard_email_template";
+    public function sendEmail($tempId, $emailVariables, $senderInfo, $receiver, $area, $storeId){
+        $this->temp_id = $tempId;        
         $this->inlineTranslation->suspend();
         $this->generateTemplate($emailVariables, $senderInfo, $receiver, $area, $storeId);
         $transport = $this->_transportBuilder->getTransport();

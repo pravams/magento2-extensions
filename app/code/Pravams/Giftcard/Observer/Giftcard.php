@@ -130,9 +130,10 @@ class Giftcard implements ObserverInterface{
 
         $area = \Magento\Framework\App\Area::AREA_FRONTEND;
 
+        $tempId = "send_giftcard_email_template";
         /* call send mail method from helper or where you define it*/
-        $this->objectManager->get('Pravams\Giftcard\Model\GiftcardEmail')->sendEmail(
-            $emailVariables, $senderInfo, $receiver, $area, $storeId
+        $this->objectManager->get('Pravams\Core\Model\Email')->sendEmail(
+            $tempId, $emailVariables, $senderInfo, $receiver, $area, $storeId
         );
         return;
     }
