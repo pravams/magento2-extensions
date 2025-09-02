@@ -50,7 +50,7 @@ php bin/magento indexer:reindex
 ```
 * After reindexing, the refresh the category on which you created the giftcard or search for it in the frontend.
 * Click on the giftcard and fill the form to purchase it.
-
+* Go to Stores->Configuration->General->General->Store Information->Store Name. Please provide the store name, as it will be used in the Valediction part of the email notification.
 
 ## Test Details
 This module has been tested using this tool <https://github.com/magento/magento-coding-standard>. Environment details are:-
