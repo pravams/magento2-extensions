@@ -32,7 +32,7 @@ if($customerSession->isLoggedIn()){
             <?php if(!$rewardApplied){?>
                 <input type="hidden" name="remove" id="remove-coupon" value="0"/>
                 <?php $totalPoints = $pointsCollection->getFirstItem()->getTotalPoints();?>   
-                <div>You have <?php echo $totalPoints;?> Reward Points.</div>
+                <div>You have <?php echo ($totalPoints)?$totalPoints:0;?> Reward Points.</div>
                 <?php if($totalPoints>0){?>
                     <div>
                         <label for="ps_points" class="label">

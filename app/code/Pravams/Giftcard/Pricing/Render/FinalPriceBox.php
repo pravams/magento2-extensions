@@ -49,8 +49,8 @@ class FinalPriceBox extends \Magento\Catalog\Pricing\Render\FinalPriceBox
         PriceInterface $price,
         RendererPool $rendererPool,
         array $data = [],
-        SalableResolverInterface $salableResolver = null,
-        MinimalPriceCalculatorInterface $minimalPriceCalculator = null
+        ?SalableResolverInterface $salableResolver = null,
+        ?MinimalPriceCalculatorInterface $minimalPriceCalculator = null
     )
     {
         parent::__construct($context, $saleableItem, $price, $rendererPool, $data);
