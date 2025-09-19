@@ -8,6 +8,7 @@ Magento 2 custom extensions and themes that enhance magento 2 features:
 * [Reward](#3-reward)
 * [Chat](#4-chat)
 * [Giftcard](#5-giftcard)
+* [Ticket](#6-ticket)
 
 ## 1.) Recurring Order
 
@@ -128,5 +129,30 @@ This would increase the sales of the merchant's store, as the number of orders w
     * Gift cards have a minimum and maximum value that can be configured in the admin.
     * Gift card discount is visible on order totals, PDF, and emails.
 
-
 **Download Link:-** <https://github.com/pravams/magento2-extensions/tree/main/app/code/Pravams/Giftcard>
+
+
+## 6.) Ticket
+
+This Ticket extension for Magento provides a way for the customers to create a Support Ticket for ongoing communication with website support team. It allows the customer to write down thier issues or questions in details with screenshots etc on the website and expect a reliable resolution. 
+This provides a comprehensive way for the customers to track and ask questions related to the website, products purchase or returns, thereby increasing customer satisfaction. This also increases the customers engagement with the site thereby increasing traffic and sales as well.
+
+* Frontend:-
+
+    * Customer can create a Support ticket for the website support team.
+    * Cusomer can set priority of the issue, indicating its urgency.        
+    * Customer can upload images in the ticket.
+    * Customer can close the ticket after it is resolved.    
+    * An email notification is sent to the website support, when customer creates a ticket or replies to it.
+    * SPAM block to avoid excessive ticket and reply posting.
+
+* Admin Backend:-
+
+    * Can view, search and filter the tickets created by the customer.
+    * Can reply to the ticket and upload images also.    
+    * Admin can close a ticket also, on behalf of the customer.    
+    * An email notification is sent to the customer on every reply also.
+
+**Download Link:-** <https://github.com/pravams/magento2-extensions/tree/main/app/code/Pravams/Ticket>
+
+
