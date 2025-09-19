@@ -21,6 +21,7 @@ This provides a comprehensive way for the customers to track and ask questions r
     * Can reply to the ticket and upload images also.    
     * Admin can close a ticket also, on behalf of the customer.    
     * An email notification is sent to the customer on every reply also.
+    * SPAM block to avoid excessive reply posting.
 
 ## Steps to Install
 
