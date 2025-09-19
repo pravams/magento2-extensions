@@ -1,0 +1,55 @@
+<div class="primary">
+    <button type="submit" title="Create New Ticket" class="action primary create-ticket">
+        <span>Create New Ticket</span>
+    </button>
+</div>
+
+<?php 
+$ticketColl = $block->getCustomCollection()->setOrder('created_at', 'DESC');
+?>
+<div class="table-wrapper orders-history">
+    <table class="data table table-order-items history" id="my-orders-table">
+        <caption class="table-caption">Tickets</caption>
+        <thead>
+            <tr>
+                <th scope="col" class="col id">Ticket #</th>
+                <th scope="col" class="col Name">Subject</th>                
+                <th scope="col" class="col status">Status</th>
+                <th scope="col" class="col date">Date</th>                
+                <th scope="col" class="col actions">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach($ticketColl as $_ticketColl){?>
+            <tr>
+                <td data-th="Order #" class="col id"><?php echo $_ticketColl->getId();?></td>
+                <td data-th="Date" class="col date"><?php echo $_ticketColl->getSubject(); ?></td>
+                <td data-th="Status" class="col status"><?php echo $_ticketColl->getStatus(); ?></td>
+                <td data-th="Order Total" class="col total"><?php echo date('Y-m-d', strtotime($_ticketColl->getCreatedAt())); ?></td>
+                <td data-th="Actions" class="col actions">
+                    <a href="<?php echo $this->getUrl('ticket/customer/view', array('id'=>$_ticketColl->getId())); ?>" class="action view">
+                    <span>View Ticket</span>
+                    </a>
+                </td>
+            </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+</div>
+
+<?php if ($this->getPagerHtml()): ?>
+<div><?php echo $block->getPagerHtml(); ?></div>
+<?php endif ?>
+
+<script type="text/javascript">
+    requirejs(['jquery'], function(jQuery){
+        jQuery(function(){
+            jQuery(document).ready(function(){
+                jQuery('.create-ticket').click(function(){
+                    location.href="<?php echo $this->getUrl('ticket/customer/create');?>";
+                });
+            });
+        });
+    });
+</script>
+

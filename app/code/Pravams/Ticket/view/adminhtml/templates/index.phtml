@@ -1,0 +1,167 @@
+<?php 
+$ticketColl = $block->getCustomCollection()->setOrder('created_at', 'DESC');
+$params = $this->getRequest()->getParams();
+$fromDate = null;
+$toDate =  null;
+if(array_key_exists('created_at', $params)){
+    $createdAt = $params['created_at'];
+    if(array_key_exists('from', $createdAt)){
+        $fromDate = $createdAt['from'];
+    }
+    if(array_key_exists('to', $createdAt)){
+        $toDate = $createdAt['to'];
+    }
+}
+
+
+?>
+<form class="form reply" action="<?php echo $this->getUrl('pravams_ticket/index/index');?>" id="ticket-grid-form" method="get">
+    <div class="admin__data-grid-header admin__data-grid-toolbar">
+        <div class="admin__data-grid-header-row">
+        </div>
+        <div class="admin__data-grid-header-row ">
+            <div class="admin__filter-actions">
+                <button id="search_grid" title="Search" type="submit" class="action-default scalable action-secondary" backend-button-widget-hook-id="buttonIdfsvBEpU2AZ" data-action="grid-filter-apply" data-ui-id="widget-button-4">
+                    <span>Search</span>
+                </button>            
+                <button id="reset_grid" title="Reset Filter" type="button" class="action-default scalable action-reset action-tertiary" backend-button-widget-hook-id="buttonIdRAPWWsysy8" data-action="grid-filter-reset" data-ui-id="widget-button-3">
+                    <span>Reset Filter</span>
+                </button>
+            </div>
+            <div class="admin__data-grid-pager-wrap">
+                <?php if ($this->getPagerHtml()): ?>
+                    <div><?php echo $block->getPagerHtml(); ?></div>
+                <?php endif ?>            
+            </div>
+        </div>
+    </div>
+    <div class="admin__data-grid-wrap" data-role="grid-wrapper">
+        <table class="data-grid data-grid-draggable" data-role="grid">
+            <thead>
+                <tr>                
+                    <th class="data-grid-th _sortable _draggable">
+                        <span class="data-grid-cell-content">Ticket #</span>
+                    </th>
+                    <th class="data-grid-th _sortable _draggable">
+                        <span class="data-grid-cell-content">Created Date</span>
+                    </th>
+                    <th class="data-grid-th _draggable">
+                        <span class="data-grid-cell-content">Customer Name</span>
+                    </th>
+                    <th class="data-grid-th _sortable _draggable _descend">
+                        <span class="data-grid-cell-content">Customer Email</span>
+                    </th>
+                    <th class="data-grid-th _sortable _draggable">
+                        <span class="data-grid-cell-content">Subject</span>
+                    </th>
+                    <th class="data-grid-th _sortable _draggable">
+                        <span class="data-grid-cell-content">Status</span>
+                    </th>
+                    <th class="data-grid-th _sortable _draggable">
+                        <span class="data-grid-cell-content">Assigned to</span>
+                    </th>
+                    <th class="data-grid-th _sortable _draggable">
+                        <span class="data-grid-cell-content">Priority</span>
+                    </th>
+                    <th class="data-grid-th">
+                        <span class="data-grid-cell-content">Action</span>
+                    </th>                
+                </tr>
+                <tr class="data-grid-filters" data-role="filter-form">
+                    <td data-column="ticket_id" class=" col-ticket_id">
+                        <input type="text" name="ticket_id" id="customer_orders_grid_filter_ticket_id" value="" class="input-text admin__control-text no-changes" data-ui-id="widget-grid-column-filter-text-0-filter-increment-id">
+                    </td>                
+                    <td data-column="created_at" class=" col-created_at">
+                        <div class="range" id="customer_orders_grid_filter_created_atmpSJWx0IpwsgLLBv8wW4cBVp31kiwN6V_range">
+                            <div class="range-line date">
+                                From:<input style="width: 80%;padding-right: 0px;" type="date" name="created_at[from]" id="from_date" value="<?php echo $fromDate;?>" class="input-text admin__control-text no-changes _has-datepicker">
+                            </div>
+                            <div class="range-line date">
+                                To: <input style="width: 80%;padding-right: 0px;" type="date" name="created_at[to]" id="to_date" value="<?php echo $toDate;?>" class="input-text admin__control-text no-changes _has-datepicker">
+                            </div>
+                        </div>
+                        <input type="hidden" name="created_at[locale]" value="en_US">
+                    </td>                
+                    <td data-column="customer_name" class=" col-customer_name">
+                        <input type="text" name="customer_name" id="customer_orders_grid_filter_customer_name" value="<?php echo $block->getGridFieldValue('customer_name');?>" class="input-text admin__control-text no-changes" data-ui-id="widget-grid-column-filter-text-1-filter-billing-name"> 
+                    </td>
+                    <td data-column="customer_email" class=" col-customer_email">
+                        <input type="text" name="customer_email" id="customer_orders_grid_filter_customer_email" value="<?php echo $block->getGridFieldValue('customer_email');?>" class="input-text admin__control-text no-changes" data-ui-id="widget-grid-column-filter-text-1-filter-billing-name"> 
+                    </td>
+                    <td data-column="subject" class=" col-subject">
+                        <input type="text" name="subject" id="customer_orders_grid_filter_subject" value="<?php echo $block->getGridFieldValue('subject');?>" class="input-text admin__control-text no-changes" data-ui-id="widget-grid-column-filter-text-1-filter-billing-name"> 
+                    </td>
+                    <td data-column="status" class=" col-status">
+                        <input type="text" name="status" id="customer_orders_grid_filter_status" value="<?php echo $block->getGridFieldValue('status');?>" class="input-text admin__control-text no-changes" data-ui-id="widget-grid-column-filter-text-1-filter-billing-name"> 
+                    </td>
+                    <td data-column="assigned_to" class=" col-assigned_to">
+                        <input type="text" name="assigned_to" id="customer_orders_grid_filter_assigned_to" value="<?php echo $block->getGridFieldValue('assigned_to');?>" class="input-text admin__control-text no-changes" data-ui-id="widget-grid-column-filter-text-2-filter-shipping-name"> 
+                    </td>
+                    <td data-column="priority" class=" col-priority">
+                        <input type="text" name="priority" id="customer_orders_grid_filter_priority" value="<?php echo $block->getGridFieldValue('priority');?>" class="input-text admin__control-text no-changes" data-ui-id="widget-grid-column-filter-text-2-filter-shipping-name"> 
+                    </td>
+                    <td data-column="action" class=" col-action">                    
+                    </td>                
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($ticketColl as $_ticketColl){ ?>                        
+                    <tr class="data-row" data-repeat-index="0">
+                        <td>
+                            <div class="data-grid-cell-content"><?php echo $_ticketColl->getId();?></div>
+                        </td>
+                        <td>
+                            <div class="data-grid-cell-content">
+                                <?php echo $_ticketColl->getCreatedAt();?>
+                            </div>
+                        </td>                    
+                        <td>
+                            <div class="data-grid-cell-content">
+                                <?php echo $_ticketColl->getCustomerName();?>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="data-grid-cell-content">
+                                <?php echo $_ticketColl->getCustomerEmail();?>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="data-grid-cell-content">
+                                <?php echo $_ticketColl->getSubject();?>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="data-grid-cell-content">
+                                <?php echo $_ticketColl->getStatus();?>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="data-grid-cell-content">
+                                <?php echo $_ticketColl->getAssignedAdminName();?>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="data-grid-cell-content">
+                                <?php echo $_ticketColl->getPriorityLevel();?>
+                            </div>
+                        </td>
+                        <td class="data-grid-actions-cell data-action-position">
+                            <a class="action-menu-item"  data-repeat-index="0" target="_self" href="<?php echo $this->getUrl('pravams_ticket/index/view', array('ticket_id' => $_ticketColl->getId()));?>">View</a>
+                        </td>                
+                    </tr>
+                <?php }?>               
+            </tbody>
+        </table>
+    </div>
+</form>
+<script type="text/javascript">
+    requirejs(['jquery'], function(jQuery){
+        jQuery(function(){
+            jQuery(document).ready(function(){
+                jQuery('#reset_grid').click(function(){
+                    location.href="<?php echo $this->getUrl('pravams_ticket/index/index');?>"
+                });
+            });
+        });
+    });
+</script>

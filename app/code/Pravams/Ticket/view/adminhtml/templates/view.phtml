@@ -1,0 +1,198 @@
+<?php 
+$ticket = $block->getTicket();
+$replies = $block->getReplies();
+?>
+<div class="view-ticket" style="width:100%;min-height: 610px;">
+    <section class="admin__page-section order-view-account-information" style="margin-bottom: 2px;">
+        <div class="admin__page-section-title">
+            <span class="title">Ticket # <?php echo $ticket->getTicketId();?></span>
+        </div>
+        <div class="admin__page-section-content">
+            <div class="admin__page-section-item order-account-information">
+                <div class="admin__page-section-item-content">
+                    <table class="admin__table-secondary order-information-table">
+                        <tbody>
+                            <tr>
+                                <th>
+                                    <span>Assigned To</span>
+                                    <div class="admin__field-tooltip tooltip" style="margin-top: 0px;">
+                                    <a href="#" title="The ticket is assigned automatically to the admin user replying it" class="admin__field-tooltip-action action-help">
+                                        <span>The ticket is assigned automatically to the admin user replying it</span>
+                                    </a>
+                                </div>
+                                
+                                </th>
+                                <td><?php 
+                                if($ticket->getAssignedAdminName() == NULL) {
+                                        echo "None";
+                                } else {
+                                        echo $ticket->getAssignedAdminName();
+                                };
+                                ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Priority</th>
+                                <td><?php                                 
+                                    echo $ticket->getPriorityLevel();                                
+                                ?>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="admin__page-section-item order-information">
+                <div class="admin__page-section-item-content">
+                    <table class="admin__table-secondary order-account-information-table">
+                        <tbody>
+                            <tr>
+                                <th>Ticket Status</th>
+                                <td>                                                                         
+                                    <span style="text-transform:uppercase;"><?php echo $ticket->getStatus();?></span>                                    
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Customer Name</th>
+                                <td>                                    
+                                    <a target="_blank" href="<?php echo $block->getUrl('customer/index/edit',array('id'=> $ticket->getCustomerId()));?>"><?php echo $ticket->getCustomerName();?></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Customer Email</th>
+                                <td>
+                                    <a href="mailto:<?php echo $ticket->getCustomerEmail();?>"><?php echo $ticket->getCustomerEmail();?></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="admin__page-section order-addresses">
+        <div class="admin__page-section-title">
+            <span class="title">Subject:  <?php echo $ticket->getSubject();?></span>
+        </div>
+        <div class="admin__page-section-content">
+            <div class="admin__page-section-item order-billing-address" style="width: 100%;">
+                <div class="admin__page-section-item-content">
+                    <?php echo $ticket->getDetails()?>
+                </div>                
+            </div>        
+            <?php if($ticket->getFilePath() != NULL){?>
+                <div class="review-date" style="display:block;margin-bottom: 8px;">
+                    <b>Attachment:</b> <u><a href="<?php echo $ticket->getFilePath()?>" target="_blank">View File</a></u>
+                </div>    
+                <div class="review-date" style="display:block;margin-bottom: 8px;">
+                    <a href="<?php echo $ticket->getFilePath()?>" target="_blank">
+                        <img style="width:30px;" src="<?php echo $ticket->getFilePath()?>" />
+                    </a>
+                </div>    
+            <?php }?>
+            <div class="review-date">
+                <i>Submitted on <time class="date"><?php echo $ticket->getCreatedAt()?></time></i>
+            </div>
+            <?php 
+            if(count($replies)>0){
+                foreach($replies as $_reply){ 
+                    if($_reply->getReplyType() == \Pravams\Ticket\Model\Reply::TYPE_CUSTOMER){
+                        $replyName = $_reply->getCustomerName();
+                    }else{
+                        $replyName = $_reply->getAdminName();
+                    }
+                    ?>
+                    <div class="block block-order-details-view" style="padding-top: 16px;margin-bottom: 0px;border-top:1px solid #ccc;">
+                        <div class="block-title">
+                            <div style="padding-bottom: 12px;">
+                                <?php echo $_reply->getDetails();?>
+                            </div>
+                            <?php if($_reply->getFilePath() != NULL){?>
+                                <div class="review-date" style="display:block;margin-bottom: 8px;">
+                                    <b>Attachment:</b> <u><a href="<?php echo $_reply->getFilePath()?>" target="_blank">View File</a></u>
+                                </div>    
+                                <div class="review-date" style="display:block;margin-bottom: 8px;">
+                                    <a href="<?php echo $ticket->getFilePath()?>" target="_blank">
+                                        <img style="width:30px;" src="<?php echo $_reply->getFilePath()?>" />
+                                    </a>
+                                </div>    
+                            <?php }?>
+                            <div class="review-date">
+                                <strong><?php echo $replyName;?></strong> <i>Replied on <time class="date"><?php echo $_reply->getCreatedAt()?></time></i>             
+                            </div>        
+                        </div>    
+                    </div>
+            <?php 
+                }
+            }
+            ?>
+            <?php if($ticket->getStatus() !=  \Pravams\Ticket\Model\Ticket::CLOSED_STATUS){ ?>
+                <form class="form reply" action="<?php echo $this->getUrl('pravams_ticket/reply/post');?>" id="ticket-form-reply" method="post" enctype="multipart/form-data">
+                    <div class="admin__page-section-content" style="padding-top: 14px;border-top: 1px solid #ccc;width: 100%;margin-top: 20px;">
+                        <div class="admin__page-section-item order-comments-history">
+                            <div id="order_history_block" class="edit-order-comments">
+                                <div class="order-history-block" id="history_form">                                
+                                    <div class="admin__field">
+                                        <label for="history_comment" class="admin__field-label">Send Reply <span style="color:red">*</span></label>
+                                        <div class="admin__field-control">
+                                            <textarea name="details" rows="3" cols="5" id="details" class="admin__control-textarea"></textarea>
+                                            <div class="admin__field-note">
+                                                <span>You can type your reply to the issue mentioned in this ticket created by the customer.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="admin__field">
+                                        <label for="history_comment" class="admin__field-label">Attach File</label>
+                                        <div class="admin__field-control">
+                                            <input type="file" name="file_path" id="file_path" title="file_path" class="input-file"/>
+                                            <div class="admin__field-note">
+                                                <span>You can upload any images related to the ticket.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="admin__field">                                    
+                                        <div class="order-history-comments-actions">
+                                            <input type="hidden" name="ticket_id" id="ticket_id" title="ticket_id" value="<?php echo $ticket->getTicketId();?>"/>
+                                            <input type="hidden" id="form_key" name="form_key" value="<?php echo $block->getFormKey();?>" />                                        
+                                            <button id="send" name="send" title="This button will send reply" type="submit" class="action-default scalable edit primary" value="send">
+                                                <span>Send</span>
+                                            </button>
+                                            <button id="back" name="send" title="This button will take you to the list page" type="button" class="action-default scalable action-save" value="back">
+                                                <span>Back</span>
+                                            </button>
+                                            <button id="sendandclose" name="send" title="This button will send reply and also close the ticket" type="submit" class="action-default scalable action-save action-secondary" value="sendandclose">
+                                                <span>Send & Close</span>
+                                            </button>
+
+                                        </div>
+                                    </div>
+                                </div>                        
+                            </div>
+                        </div>                
+                    </div>
+                </form>
+            <?php } else{ ?> 
+                <br/>
+                <button id="back" name="send" title="This button will take you to the list page" type="submit" class="action-default scalable action-save" value="back">
+                    <span>Back</span>
+                </button>
+            <?php }?>             
+        </div>
+    </section>
+</div>
+<script type="text/javascript">
+    requirejs(['jquery'], function(jQuery){
+        jQuery(function(){
+            jQuery(document).ready(function(){
+                jQuery('#back').click(function(){
+                    location.href="<?php echo $this->getUrl('pravams_ticket/index/index');?>"
+                });
+            });
+        });
+    });
+</script>

@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!-- 
+/**
+  * Pravams Ticket Module
+  * @category Pravams
+  * @package Pravams_Ticket
+  * @copyright Copyright (c) 2025 Pravams. (http://www.pravams.com)
+  * @license http://opensource.org/licenses/osl-3.0.php Opens Software License (OSL 3.0)
+*/
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="ps_ticket" resource="default" engine="innodb" comment="Customer Tickets">
+        <column xsi:type="int" name="ticket_id" unsigned="true" nullable="false" identity="true" comment="Entity Id"/>
+        <column xsi:type="int" name="customer_id" unsigned="true" nullable="false" default="0" comment="Customer Id"/>
+        <column xsi:type="varchar" name="customer_name" nullable="false" length="255" comment="Customer Name" />
+        <column xsi:type="varchar" name="customer_email" nullable="false" length="255" comment="Customer Email" />
+        <column xsi:type="varchar" name="subject" nullable="false" length="1000" comment="Ticket Subject" />
+        <column xsi:type="varchar" name="details" nullable="false" length="5000" comment="Ticket Details" />
+        <column xsi:type="varchar" name="file_path" nullable="false" length="200" comment="Ticket File upload path" />
+        <column xsi:type="varchar" name="status" nullable="false" length="255" comment="Ticket Status" />
+        <column xsi:type="varchar" name="priority_level" nullable="false" length="255" comment="Ticket Priority Level" />
+        <column xsi:type="int" name="assigned_admin_id" unsigned="true" nullable="true" comment="Ticket Admin Assigned" />
+        <column xsi:type="varchar" name="assigned_admin_name" nullable="true" length="255" comment="Ticket Admin Name" />
+        <column xsi:type="datetime" name="created_at" on_update="false" nullable="true" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="datetime" name="updated_at" on_update="true" nullable="true" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="ticket_id"/>
+        </constraint>
+    </table>
+    <table name="ps_ticket_reply" resource="default" engine="innodb" comment="Customer Tickets Reply">
+        <column xsi:type="int" name="reply_id" unsigned="true" nullable="false" identity="true" comment="Entity Id"/>
+        <column xsi:type="int" name="ticket_id" unsigned="true" nullable="false" comment="Entity Id"/>
+        <column xsi:type="int" name="parent_id" unsigned="true" nullable="true" default="0" comment="Entity Id"/>
+        <column xsi:type="int" name="customer_id" unsigned="true" nullable="false" default="0" comment="Customer Id"/>
+        <column xsi:type="varchar" name="customer_name" nullable="false" length="255" comment="Customer Name" />
+        <column xsi:type="varchar" name="customer_email" nullable="false" length="255" comment="Customer Email" />
+        <column xsi:type="varchar" name="subject" nullable="false" length="1000" comment="Ticket Subject" />
+        <column xsi:type="varchar" name="details" nullable="false" length="5000" comment="Ticket Details" />
+        <column xsi:type="varchar" name="reply_type" nullable="false" length="255" comment="Reply Type" />
+        <column xsi:type="varchar" name="file_path" nullable="false" length="200" comment="Ticket File upload path" />
+        <column xsi:type="int" name="admin_id" unsigned="true" nullable="true" comment="Ticket Admin Id" />
+        <column xsi:type="varchar" name="admin_name" nullable="false" length="255" comment="Ticket Admin Name" />
+        <column xsi:type="datetime" name="created_at" on_update="false" nullable="true" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="datetime" name="updated_at" on_update="true" nullable="true" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="reply_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="PRAVAMD_TICKET_ID_REPLY_ID" table="ps_ticket_reply" column="ticket_id" referenceTable="ps_ticket" referenceColumn="ticket_id" onDelete="CASCADE"></constraint>
+        <index referenceId="PRAVAMS_TICKET_REPLY_ID" indexType="btree">
+            <column name="ticket_id"/>
+        </index>
+    </table>
+</schema>

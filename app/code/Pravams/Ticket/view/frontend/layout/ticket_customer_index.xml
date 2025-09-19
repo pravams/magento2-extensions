@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
+    <update handle="customer_account"/>
+    <referenceBlock name="page.main.title">
+        <action method="setPageTItle">
+            <argument translate="true" name="title" xsi:type="string">My Tickets</argument>
+        </action>
+    </referenceBlock>
+    <referenceContainer name="content">
+        <block class="Pravams\Ticket\Block\Tab" name="my-tickets" template="Pravams_Ticket::customer/account/tickettab.phtml" cacheable="false"/>
+    </referenceContainer>
+</page>

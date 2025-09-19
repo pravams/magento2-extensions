@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
+    <update handle="customer_account"/>
+    <referenceBlock name="page.main.title">
+        <action method="setPageTItle">
+            <argument translate="true" name="title" xsi:type="string">Create New Ticket</argument>
+        </action>
+    </referenceBlock>
+    <referenceBlock name="content">
+        <block class="Magento\Framework\View\Element\Template" name="create-ticket" template="Pravams_Ticket::customer/account/create.phtml"/>
+    </referenceBlock>
+</page> 

@@ -1,0 +1,110 @@
+<?php 
+$ticket = $block->getTicketData();?>
+<?php 
+$replies = $block->getReplies();
+?>
+<div class="review-details" style="border-bottom: 1px solid #c6c6c6;">
+    <div class="review-title" style="margin:0 0 9px">Subject: <?php echo $ticket->getSubject()?></div>
+    <div class="review-content">
+        <?php echo $ticket->getDetails()?>
+    </div>
+    <?php if($ticket->getFilePath() != NULL){?>
+        <div class="review-date" style="display:block;margin-bottom: 8px;">
+            <b>Attachment:</b> <u><a href="<?php echo $ticket->getFilePath()?>" target="_blank">View File</a></u>
+        </div>    
+        <div class="review-date" style="display:block;margin-bottom: 8px;">
+            <a href="<?php echo $ticket->getFilePath()?>" target="_blank">
+                <img style="width:30px;" src="<?php echo $ticket->getFilePath()?>" />
+            </a>
+        </div>    
+    <?php }?>
+    <div class="review-date">
+        <i>Submitted on <time class="date"><?php echo $ticket->getCreatedAt()?></time></i>
+    </div>
+</div>
+<?php 
+if(count($replies)>0){
+    foreach($replies as $_reply){ 
+        if($_reply->getReplyType() == \Pravams\Ticket\Model\Reply::TYPE_CUSTOMER){
+            $replyName = $_reply->getCustomerName();
+        }else{
+            $replyName = $_reply->getAdminName();
+        }
+        ?>
+        <div class="block block-order-details-view" style="padding-top: 16px;margin-bottom: 0px;">
+            <div class="block-title">
+                <div style="padding-bottom: 12px;">
+                    <?php echo $_reply->getDetails();?>
+                </div>
+                <?php if($_reply->getFilePath() != NULL){?>
+                    <div class="review-date" style="display:block;margin-bottom: 8px;">
+                        <b>Attachment:</b> <u><a href="<?php echo $_reply->getFilePath()?>" target="_blank">View File</a></u>
+                    </div>    
+                    <div class="review-date" style="display:block;margin-bottom: 8px;">
+                        <a href="<?php echo $ticket->getFilePath()?>" target="_blank">
+                            <img style="width:30px;" src="<?php echo $_reply->getFilePath()?>" />
+                        </a>
+                    </div>    
+                <?php }?>
+                <div class="review-date">
+                    <strong><?php echo $replyName;?></strong> <i>Replied on <time class="date"><?php echo $_reply->getCreatedAt()?></time></i>             
+                </div>        
+            </div>    
+        </div>
+<?php 
+    }
+}
+?>
+<?php if($ticket->getStatus() !=  \Pravams\Ticket\Model\Ticket::CLOSED_STATUS){ ?>
+    <form class="form reply" action="<?php echo $this->getUrl('ticket/reply/post');?>" id="ticket-form-reply" method="post" enctype="multipart/form-data">
+        <fieldset class="fieldset">
+            <div class="field details required">
+                <label class="label" for="details">
+                    <span>Send reply</span>
+                </label>
+                <div class="control">
+                    <textarea name="details" id="details" title="details of the issue" class="input-text" cols="5" rows="3" aria-required="true"></textarea>
+                </div>
+            </div>
+            <div class="field file_path">
+                <label class="label" for="file_path"><span>Attach File</span></label>
+                <div class="control">
+                    <input type="file" name="file_path" id="file_path" title="file_path" class="input-file"/>
+                </div>
+            </div>
+        </fieldset>
+        <div class="actions-toolbar">
+            <div class="primary">
+                <input type="hidden" name="ticket_id" id="ticket_id" title="ticket_id" value="<?php echo $ticket->getTicketId();?>"/>
+                <button type="submit" title="Submit" class="action submit primary" id="submit" name="send" value="send">
+                    <span>Send</span>
+                </button>
+            </div>
+            <div class="secondary">
+                <button type="button" title="Back" class="secondary" id="back" name="back">
+                    <span>Back</span>
+                </button>
+            </div>
+            <div class="secondary" style="margin-left: 12px;">
+                <button type="submit" title="sendandclose" class="secondary" id="sendandclose" name="send" style="background-color: #514943;border-color: #514943;color: #fff;text-shadow: 1px 1px 1px rgba(0,0,0,0.3);" value="sendandclose">
+                    <span>Send & Close</span>
+                </button>
+            </div>
+        </div>
+    </form>
+<?php } else { ?>
+    <button type="button" title="Back" class="secondary" id="back" name="back">
+        <span>Back</span>
+    </button>
+<?php }?>
+<script type="text/javascript">
+    requirejs(['jquery'], function(jQuery){
+        jQuery(function(){
+            jQuery(document).ready(function(){
+                jQuery('#back').click(function(){
+                    location.href="<?php echo $this->getUrl('ticket/customer/index');?>"
+                });
+            });
+        });
+    });
+</script>

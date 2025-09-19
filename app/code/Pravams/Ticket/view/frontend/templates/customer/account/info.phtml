@@ -1,0 +1,22 @@
+<?php 
+$ticket = $block->getTicketData();
+?>
+<span class="order-status"><?php echo $ticket->getStatus()?></span>
+<div class="order-date">
+<span><u>Assigned To:</u> <i>
+        <?php 
+        if($ticket->getAssignedAdminName() == NULL) {
+                echo "None";
+        } else {
+                echo $ticket->getAssignedAdminName();
+        };
+        ?>
+</i></span>
+</div>
+<div class="order-date">
+<span><u>Priority:</u> <i>
+        <?php 
+        echo $ticket->getPriorityLevel();        
+        ?>
+</i></span>
+</div>
