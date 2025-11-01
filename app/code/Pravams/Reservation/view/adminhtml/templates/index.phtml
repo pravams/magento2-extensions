@@ -1,0 +1,123 @@
+<?php 
+$quoteItemColl = $block->getCustomCollection()->setOrder('created_at', 'DESC');
+$params = $this->getRequest()->getParams();
+$fromDate = null;
+$toDate =  null;
+if(array_key_exists('reservation_date', $params)){
+    $createdAt = $params['reservation_date'];
+    if(array_key_exists('from', $createdAt)){
+        $fromDate = $createdAt['from'];
+    }
+    if(array_key_exists('to', $createdAt)){
+        $toDate = $createdAt['to'];
+    }
+}
+
+
+?>
+<form class="form reply" action="<?php echo $this->getUrl('pravams_reservation/index/index');?>" id="reservation-grid-form" method="get">
+    <div class="admin__data-grid-header admin__data-grid-toolbar">
+        <div class="admin__data-grid-header-row">
+        </div>
+        <div class="admin__data-grid-header-row ">
+            <div class="admin__filter-actions">
+                <button id="search_grid" title="Search" type="submit" class="action-default scalable action-secondary" backend-button-widget-hook-id="buttonIdfsvBEpU2AZ" data-action="grid-filter-apply" data-ui-id="widget-button-4">
+                    <span>Search</span>
+                </button>            
+                <button id="reset_grid" title="Reset Filter" type="button" class="action-default scalable action-reset action-tertiary" backend-button-widget-hook-id="buttonIdRAPWWsysy8" data-action="grid-filter-reset" data-ui-id="widget-button-3">
+                    <span>Reset Filter</span>
+                </button>
+            </div>
+            <div class="admin__data-grid-pager-wrap">
+                <?php if ($this->getPagerHtml()): ?>
+                    <div><?php echo $block->getPagerHtml(); ?></div>
+                <?php endif ?>            
+            </div>
+        </div>
+    </div>
+    <div class="admin__data-grid-wrap" data-role="grid-wrapper">
+        <table class="data-grid data-grid-draggable" data-role="grid">
+            <thead>
+                <tr>
+                    <th class="data-grid-th    ">
+                        <span class="data-grid-cell-content">Booking Place</span>
+                    </th>                                    
+                    <th class="data-grid-th    ">
+                        <span class="data-grid-cell-content">Reservation Name</span>
+                    </th>
+                    <th class="data-grid-th    ">
+                        <span class="data-grid-cell-content">Order #</span>
+                    </th>
+                    <th class="data-grid-th  ">
+                        <span class="data-grid-cell-content">Reservation Date</span>
+                    </th>
+                    
+                </tr>
+                <tr class="data-grid-filters" data-role="filter-form">
+                    <td data-column="name" class=" col-ticket_id">
+                        <input type="text" name="name" id="customer_orders_grid_filter_ticket_id" value="<?php echo $block->getGridFieldValue('name');?>" class="input-text admin__control-text no-changes" data-ui-id="widget-grid-column-filter-text-0-filter-increment-id">
+                    </td>                
+                    <td data-column="reservation_name" class=" col-ticket_id">
+                        <input type="text" name="reservation_name" id="customer_orders_grid_filter_ticket_id" value="<?php echo $block->getGridFieldValue('reservation_name');?>" class="input-text admin__control-text no-changes" data-ui-id="widget-grid-column-filter-text-0-filter-increment-id">
+                    </td>                
+                    <td data-column="order_id" class=" col-ticket_id">
+                        <input type="text" name="order_id" id="customer_orders_grid_filter_ticket_id" value="<?php echo $block->getGridFieldValue('order_id');?>" class="input-text admin__control-text no-changes" data-ui-id="widget-grid-column-filter-text-0-filter-increment-id">
+                    </td>                
+                    <td data-column="reservation_date" class=" col-created_at">
+                        <div class="range" id="customer_orders_grid_filter_created_atmpSJWx0IpwsgLLBv8wW4cBVp31kiwN6V_range">
+                            <div class="range-line date">
+                                From:<input style="width: 80%;padding-right: 0px;" type="date" name="reservation_date[from]" id="from_date" value="<?php echo $fromDate;?>" class="input-text admin__control-text no-changes _has-datepicker">
+                            </div>
+                            <div class="range-line date">
+                                To: <input style="width: 80%;padding-right: 0px;" type="date" name="reservation_date[to]" id="to_date" value="<?php echo $toDate;?>" class="input-text admin__control-text no-changes _has-datepicker">
+                            </div>
+                        </div>
+                        <input type="hidden" name="created_at[locale]" value="en_US">
+                    </td>                
+                                    
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($quoteItemColl as $_quoteItemColl){ ?>                        
+                    <tr class="data-row" data-repeat-index="0">
+                        <td>
+                            <div class="data-grid-cell-content">
+                                <a class="action-menu-item"  data-repeat-index="0" target="_blank" href="<?php echo $this->getUrl('catalog/product/edit/', array('id' => $_quoteItemColl->getProductId()));?>"><?php echo $_quoteItemColl->getName();?></a>                                
+                            </div>
+                        </td>
+                        <td>
+                            <div class="data-grid-cell-content">
+                                <?php echo $_quoteItemColl->getReservationName();?>
+                            </div>
+                        </td>
+                        <td class="data-grid-actions-cell data-action-position">
+                            <?php 
+                            $salesOrder = $block->getSalesOrder($_quoteItemColl->getOrderId());
+                            ?>                            
+                            <div class="data-grid-cell-content">
+                                <a class="action-menu-item"  data-repeat-index="0" target="_blank" href="<?php echo $this->getUrl('sales/order/view/', array('order_id' => $salesOrder->getId()));?>"><?php echo $_quoteItemColl->getOrderId();?></a>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="data-grid-cell-content">
+                                <?php echo $_quoteItemColl->getReservationDate();?>
+                            </div>
+                        </td>
+                                        
+                    </tr>
+                <?php }?>               
+            </tbody>
+        </table>
+    </div>
+</form>
+<script type="text/javascript">
+    requirejs(['jquery'], function(jQuery){
+        jQuery(function(){
+            jQuery(document).ready(function(){
+                jQuery('#reset_grid').click(function(){
+                    location.href="<?php echo $this->getUrl('pravams_reservation/index/index');?>"
+                });
+            });
+        });
+    });
+</script>

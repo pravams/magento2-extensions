@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ * Pravams Reservation Module
+ * 
+ * @category  Pravams
+ * @package   Pravams_Reservation
+ * @copyright Copyright (c) 2018 Pravams. (http://pravams.com)
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ */
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Magento\Catalog\Block\Product\View" type="Pravams\Reservation\Block\Catalog\Product\View" />
+    <preference for="Magento\Catalog\Model\Cart" type="Pravams\Reservation\Model\Checkout\Cart"/>
+    <type name="Magento\Checkout\Model\Cart">
+        <plugin name="intercept_adding_producttocart"
+                type="Pravams\Reservation\Plugin\Model\Checkout\Cart\Plugin"
+                sortOrder="10"
+                disabled="false"/>
+    </type>  
+    <type name="Magento\Checkout\Model\DefaultConfigProvider">
+        <plugin name="intercept_reservation_date"
+                type="Pravams\Reservation\Plugin\Model\Checkout\Provider\Dateplugin"
+                sortOrder="10"
+                disabled="false"/>
+    </type>
+    <type name="Magento\Sales\Block\Order\Email\Items\Order\DefaultOrder">
+        <plugin name="Pravams_Reservation_Plugin_Block_Sales_Order_Email" type="Pravams\Reservation\Plugin\Block\Sales\Order\Email\Items\Order\DefaultOrder" sortOrder="1" disabled="false"/>
+    </type>
+    
+</config>

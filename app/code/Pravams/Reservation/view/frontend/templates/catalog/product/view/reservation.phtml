@@ -1,0 +1,84 @@
+<style>
+
+.pdp-res-row{
+    width: 160%;
+    float: left;
+    margin: 0 auto;
+    height: 48px;
+}
+.pdp-res-block {
+    width: 210px;
+    float: left;
+}
+
+</style>
+
+
+<?php $_helper = $this->helper('Magento\Catalog\Helper\Output'); ?>
+<?php $_product = $block->getProduct(); ?>
+<div class="product-add-form">
+    <form data-product-sku="<?= $block->escapeHtml($_product->getSku()) ?>"
+          action="<?= /* @NoEscape */ $block->getSubmitUrl($_product) ?>" method="post"
+          id="product_addtocart_form"<?php if ($_product->getOption()): ?> enctype="multipart/form-data" <?php endif; ?>>
+        <input type="hidden" name="product" value="<?= /* @escapeNotVerified */ $_product->getId() ?>" />
+        <?= $block->getBlockHtml('formkey') ?>
+        <div class="box-tocart">
+            <div class="fieldset">
+                <div class="control">
+                    <div class="pdp-res-row">
+                        <div class="pdp-res-block">
+                            <span>Reservation Name</span>
+                        </div>  
+                        <div class="pdp-res-block">
+                            <input name="reservation_name" id="reservation_name" Value="" title="Customer Name" style="margin-left: 12px;"/>
+                            <div id="customer_name_error" class="mage-error" style="display:none;">Please enter your name.</div>
+                        </div>
+                    </div>
+                    <div class="pdp-res-row">
+                        <div class="pdp-res-block"><span>Reservation Date</span></div>
+                        <div class="pdp-res-block"><input name="reservation_date" id="reservation_date" value="" title="select_your_date" class="input-number reservation_date" type="date" style="width:200px;"/><br></div>
+                            <div class="pdp-res-block"><div id="reservation_date-error" class="mage-error" style="display:none;">Please select the reservation date.</div></div>
+                    </div>
+                    <div class="field qty">
+                        <div class="control">
+                            <input name="qty" id="qty" value="1" title="Qty" class="input-text qty" type="hidden">
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button type="button" title="Add to cart" class="action primary tocart" id="product-addtocart-reservation-button">
+                            <span>Book Now</span>
+                        </button>
+                    </div>  
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">   
+requirejs(['jquery'], function(jQuery) {
+    jQuery(function () {
+        jQuery('#product-addtocart-reservation-button').click(function () {
+            jQuery('#reservation_date-error').css('display','none');
+            jQuery('#customer_name_error').css('display','none'); 
+            var flag = false;
+            var date = jQuery('#reservation_date').val();
+ console.log(date);
+            if(date == ''){
+                flag = true;
+                jQuery('#reservation_date-error').css('display','block'); 
+            }
+            var name = jQuery('#reservation_name').val();
+ console.log(name);
+            if(name == ''){
+                flag = true;
+                jQuery('#customer_name_error').css('display','block'); 
+            }
+            if(flag == false){
+                jQuery('#product_addtocart_form').submit();
+            }
+        });
+    });
+});
+
+</script>

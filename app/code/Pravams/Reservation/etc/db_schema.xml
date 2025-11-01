@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+
+    <table name="quote_item" resource="checkout" engine="innodb" comment="Sales Flat Quote Item">
+        <column xsi:type="varchar" name="reservation_name" nullable="false" length="255" comment="Reservation Name"/>
+        <column xsi:type="timestamp" name="reservation_date" nullable="false" length="255" comment="Reservation Dare"/>
+        <column xsi:type="varchar" name="order_id" nullable="false" length="255" comment="Reservation ID"/>
+    </table>
+
+</schema>
+

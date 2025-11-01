@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!-- 
+/***
+ * Pravams Reservation Module
+ *
+ * @category Pravams
+ * @package Pravams_Reservation
+ * @copyright Copyright (c) 2025 Pravams (http://wwww.pravams.com)
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+*/
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:app/etc/routes.xml">
+    <router id="admin">
+        <route id="pravams_reservation" frontName="pravams_reservation">
+            <module name="Pravams_Reservation"/>
+        </route>
+    </router>
+</config>

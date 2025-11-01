@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+/**
+* Copyright © Magento, Inc. All rights reserved.
+* See COPYING.txt for license details.
+*/ 
+-->
+
+<page xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <referenceBlock name="sales.order.print.invoice.renderers.default">
+        <action method="setTemplate">
+            <argument name="template" xsi:type="string">Pravams_Reservation::order/invoice/items/renderer/default.phtml</argument>
+        </action>
+    </referenceBlock>
+</page>
