@@ -9,6 +9,7 @@ Magento 2 custom extensions and themes that enhance magento 2 features:
 * [Chat](#4-chat)
 * [Giftcard](#5-giftcard)
 * [Ticket](#6-ticket)
+* [Reservation](#7-reservation)
 
 ## 1.) Recurring Order
 
@@ -157,3 +158,24 @@ This provides a comprehensive way for the customers to track and ask questions r
 **Download Link:-** <https://github.com/pravams/magento2-extensions/tree/main/app/code/Pravams/Ticket>
 
 
+## 7.) Reservation
+
+This Reservation or Bookings extension for Magento provides a way for the customers to buy products that need a reservation (or that require a date input mandatorily) while adding them to the cart.
+For example, the owner of a guest house or hotel can use this extension, where his customers can book the dates of their stay.
+
+
+* Frontend:-
+
+    * Customers can view the reservation products list.
+    * Customers can add the product after providing the reservation name and selecting the date.
+    * Customer can see his selected date during all the steps of checkout.
+    * Customer can see the booked dates on his email and pdf also.
+    * Ideal Customers who may want this extension would be Movie Ticket Sellers, Hotel Rooms seller, Food reservation sites for restaurants, event organizing, seat bookings in travel etc. and many other such places who have to collect the date and name on thier product for sale.
+
+* Admin Backend:-
+
+    * Admin can log into admin and go to Pravams->All Reservations. And he can view, search the orders placed by reservation name, order# or booking place name.
+    * Admin can also see the customer's selected dates of the booking.
+    * The inventory is deducted after the purchase for the booking place, so Admin can estimate accordingly
+
+**Download Link:-** <https://github.com/pravams/magento2-extensions/tree/main/app/code/Pravams/Reservation>
