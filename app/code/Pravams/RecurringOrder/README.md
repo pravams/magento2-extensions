@@ -36,12 +36,12 @@ php bin/magento cache:flush
 
 ## Test Details
 This module has been tested using this tool <https://github.com/magento/magento-coding-standard>. Environment details are:-
-* Magento 2.4.8
+* Magento 2.4.9
 * Ubuntu 22.04.4 LTS
-* PHP 8.4.6
+* PHP 8.5.6
 * mysql Ver 8.4.5
 * Apache/2.4.52
-* Opensearch 2.19.1
+* Opensearch 2.19.5
 * Composer version 2.7.9
 
 

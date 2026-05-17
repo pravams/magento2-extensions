@@ -25,12 +25,15 @@ class Reservation implements ObserverInterface{
         
         $cart = $this->cart;
         $cartItems = $cart->getQuote()->getItems();
-        foreach($cartItems as $_cartItem){
-            if ($_cartItem->getProduct()->getTypeId() ==  \Pravams\Reservation\Model\Product\Type\Reservation::TYPE_ID ){
-                $_cartItem->setOrderId($orderId);
-                $_cartItem->save();
+        if($cartItems){
+            foreach($cartItems as $_cartItem){
+                if ($_cartItem->getProduct()->getTypeId() ==  \Pravams\Reservation\Model\Product\Type\Reservation::TYPE_ID ){
+                    $_cartItem->setOrderId($orderId);
+                    $_cartItem->save();
+                }
             }
         }
+        
     }
 
 }
