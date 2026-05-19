@@ -20,7 +20,10 @@
            $option = $_cartItem->getProduct()->getTypeInstance(true)->getOrderOptions($_cartItem->getProduct());
            $date = $option['info_buyRequest']['reservation_date'];
            $name = $option['info_buyRequest']['reservation_name'];
-       } 
+       } else{
+            $date = "";
+           $name = "";
+       }
 
 
 
@@ -58,11 +61,12 @@
                         <?= $block->escapeHtml($block->getProductName()) ?>
                     <?php endif; ?>
                 </strong>
-                
-                <div>Reservation Name: <?php echo $name; ?>
-                </div>
-                <div>Reservation Date: <?php echo $date; ?>
-                </div>
+                <?php if($name){?>
+                    <div>Reservation Name: <?php echo $name; ?>
+                    </div>
+                    <div>Reservation Date: <?php echo $date; ?>
+                    </div>    
+                <?php }?>
                             
                 <?php if ($_options = $block->getOptionList()): ?>
                     <dl class="item-options">
