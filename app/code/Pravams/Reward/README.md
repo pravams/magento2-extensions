@@ -40,13 +40,14 @@ php bin/magento cache:flush
 
 ## Test Details
 This module has been tested with the below environment details:-
-* Magento 2.4.8
-* Ubuntu 22.04.4 LTS
-* PHP 8.4.6
-* mysql Ver 8.4.5
-* Apache/2.4.52
-* Opensearch 2.19.1
-* Composer version 2.7.9
+* Magento 2.4.9
+* Ubuntu 24.04.3 LTS
+* PHP 8.5.6
+* mysql Ver 8.0.45
+* Apache/2.4.58
+* Opensearch 2.19.5
+* Composer version 2.9.5
+
 
 
 
