@@ -28,7 +28,10 @@ class RewardPlugin{
 
     public function afterGetConfig($subject, $output){
         $checkoutSession = $this->checkoutSession;
-        $currency = $this->currency;
+        //$currency = $this->currency;
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $storeManager = $objectManager->get('Magento\Store\Model\StoreManagerInterface');
+        $currency = $storeManager->getStore()->getCurrentCurrency();
         $rewardDiscount = $checkoutSession->getPsPointsDiscount();
         if($rewardDiscount > 0){
             $output['ps_reward_points'] = "-".$currency->getCurrencySymbol().$rewardDiscount;

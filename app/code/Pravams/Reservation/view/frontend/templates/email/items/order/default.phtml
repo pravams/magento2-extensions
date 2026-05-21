@@ -24,13 +24,13 @@ $_order = $_item->getOrder();
                      $name = $productOption['info_buyRequest']['reservation_name'];
                      echo $name;       
                      ?>
-        </div><?php } ?>
+        </div>
         <div class="date"> Reservation Date:
                      <?php $productOption = $_item->getProductOptions();
                      $date = $productOption['info_buyRequest']['reservation_date'];
                      echo $date;       
                       ?>
-        </div><?php  ?>
+        </div><?php } ?>
         <?php if ($block->getItemOptions()) : ?>
             <dl class="item-options">
             <?php foreach ($block->getItemOptions() as $option) : ?>

@@ -93,7 +93,7 @@ class Redeem extends \Magento\Framework\App\Action\Action
       }else{
         $discountAmount = intval($psPoints / $pointsToUnit);                
         $checkoutSession = $this->checkoutSession;
-        $checkoutSession->setPsPointsDiscount($discountAmount);
+        $checkoutSession->setPsPointsDiscount($discountAmount);        
         $this->messageManager->addSuccessMessage('Your points have been used to discount the shopping cart');
       }
     }
