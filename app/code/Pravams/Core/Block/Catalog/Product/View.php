@@ -130,15 +130,17 @@ class View extends \Magento\Catalog\Block\Product\View {
     }*/
 
     public function setTemplate($template)
-    {        
-        $type = $this->getProduct()->getTypeId();
-        if($type == \Pravams\Giftcard\Model\Product\Type\Giftcard::TYPE_ID &&
-        $template == "Magento_Catalog::product/view/form.phtml"){
-            $template = "Pravams_Giftcard::catalog/product/view/giftcard_form.phtml";
-        }else if($type == \Pravams\Reservation\Model\Product\Type\Reservation::TYPE_ID &&
+    {   
+        if($this->getProduct()){
+            $type = $this->getProduct()->getTypeId();
+            if($type == \Pravams\Giftcard\Model\Product\Type\Giftcard::TYPE_ID &&
             $template == "Magento_Catalog::product/view/form.phtml"){
-            $template = "Pravams_Reservation::catalog/product/view/reservation.phtml";
-        }
+                $template = "Pravams_Giftcard::catalog/product/view/giftcard_form.phtml";
+            }else if($type == \Pravams\Reservation\Model\Product\Type\Reservation::TYPE_ID &&
+                $template == "Magento_Catalog::product/view/form.phtml"){
+                $template = "Pravams_Reservation::catalog/product/view/reservation.phtml";
+            }        
+        }     
         $this->_template = $template;
         return $this;
     }
